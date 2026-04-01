@@ -58,12 +58,12 @@ fun GalleryClockContent(
             36 -> SwissClockStyle(parts, language, accentColor, Modifier.fillMaxSize())
             37 -> IndustrialClockStyle(parts, language, accentColor, Modifier.fillMaxSize())
             38 -> TokyoNeonClockStyle(parts, language, accentColor, Modifier.fillMaxSize())
-            39 -> PaperMinimalismClockStyle(parts, language, accentColor, Modifier.fillMaxSize())
-            40 -> CyberGlitchClockStyle(parts, language, accentColor, Modifier.fillMaxSize())
-            41 -> AbstractGeometricClockStyle(parts, language, accentColor, Modifier.fillMaxSize())
-            42 -> TypographyFocusClockStyle(parts, language, accentColor, Modifier.fillMaxSize())
-            43 -> NothingDotClockStyle(parts, language, accentColor, Modifier.fillMaxSize())
-            else -> FrostedStudioClockStyle(parts, language, accentColor, Modifier.fillMaxSize())
+//            39 -> PaperMinimalismClockStyle(parts, language, accentColor, Modifier.fillMaxSize())
+//            40 -> CyberGlitchClockStyle(parts, language, accentColor, Modifier.fillMaxSize())
+//            41 -> AbstractGeometricClockStyle(parts, language, accentColor, Modifier.fillMaxSize())
+//            42 -> TypographyFocusClockStyle(parts, language, accentColor, Modifier.fillMaxSize())
+//            43 -> NothingDotClockStyle(parts, language, accentColor, Modifier.fillMaxSize())
+//            else -> FrostedStudioClockStyle(parts, language, accentColor, Modifier.fillMaxSize())
         }
     }
 }

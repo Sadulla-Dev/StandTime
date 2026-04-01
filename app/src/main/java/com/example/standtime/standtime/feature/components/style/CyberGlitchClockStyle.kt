@@ -24,8 +24,7 @@ import com.example.standtime.standtime.StandTimeLanguage
 fun CyberGlitchClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, accentColor: Color, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .fillMaxSize()
-            .background(Color(0xFF050505)),
+            .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         // Horizontal glitch line

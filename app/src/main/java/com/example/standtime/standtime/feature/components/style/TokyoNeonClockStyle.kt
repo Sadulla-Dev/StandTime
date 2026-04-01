@@ -26,8 +26,7 @@ import com.example.standtime.standtime.StandTimeLanguage
 fun TokyoNeonClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, accentColor: Color, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .fillMaxSize()
-            .background(Color(0xFF020205)),
+            .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         // Background Glow

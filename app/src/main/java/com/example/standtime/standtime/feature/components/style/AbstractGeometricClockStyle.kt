@@ -25,8 +25,7 @@ import com.example.standtime.standtime.StandTimeLanguage
 fun AbstractGeometricClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, accentColor: Color, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .fillMaxSize()
-            .background(Color(0xFFF9FAFB)),
+            .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         // Large dark circle

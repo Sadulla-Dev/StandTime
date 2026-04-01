@@ -51,12 +51,12 @@ val galleryStyles: List<GalleryStyleEntry> = listOf(
     GalleryStyleEntry(R.string.gallery_style_swiss, Brush.linearGradient(listOf(Color(0xFFE63946), Color(0xFFB91C1C))), Color.White.copy(alpha = 0.6f)),
     GalleryStyleEntry(R.string.gallery_style_industrial, Brush.linearGradient(listOf(Color(0xFF1C1C1C), Color(0xFF090909))), Color.White.copy(alpha = 0.6f)),
     GalleryStyleEntry(R.string.gallery_style_frosted, Brush.linearGradient(listOf(Color(0xFF3F3F46), Color.Black)), Color.White.copy(alpha = 0.6f)),
-    GalleryStyleEntry(R.string.gallery_style_tokyo_neon, Brush.linearGradient(listOf(Color(0xFF020205), Color.Black)), Color.White.copy(alpha = 0.6f)),
-    GalleryStyleEntry(R.string.gallery_style_paper, Brush.linearGradient(listOf(Color(0xFFE5E7EB), Color(0xFFD4D4D8))), Color(0xFF18181B).copy(alpha = 0.7f)),
-    GalleryStyleEntry(R.string.gallery_style_glitch, Brush.linearGradient(listOf(Color(0xFF050505), Color.Black)), Color.White.copy(alpha = 0.6f)),
-    GalleryStyleEntry(R.string.gallery_style_abstract, Brush.linearGradient(listOf(Color(0xFFF9FAFB), Color(0xFFF3F4F6))), Color(0xFF18181B).copy(alpha = 0.7f)),
-    GalleryStyleEntry(R.string.gallery_style_typography, Brush.linearGradient(listOf(Color.White, Color(0xFFF9FAFB))), Color(0xFF18181B).copy(alpha = 0.7f)),
-    GalleryStyleEntry(R.string.gallery_style_nothing_dot, Brush.linearGradient(listOf(Color.Black, Color(0xFF090909))), Color.White.copy(alpha = 0.6f)),
+//    GalleryStyleEntry(R.string.gallery_style_tokyo_neon, Brush.linearGradient(listOf(Color(0xFF020205), Color.Black)), Color.White.copy(alpha = 0.6f)),
+//    GalleryStyleEntry(R.string.gallery_style_paper, Brush.linearGradient(listOf(Color(0xFFE5E7EB), Color(0xFFD4D4D8))), Color(0xFF18181B).copy(alpha = 0.7f)),
+//    GalleryStyleEntry(R.string.gallery_style_glitch, Brush.linearGradient(listOf(Color(0xFF050505), Color.Black)), Color.White.copy(alpha = 0.6f)),
+//    GalleryStyleEntry(R.string.gallery_style_abstract, Brush.linearGradient(listOf(Color(0xFFF9FAFB), Color(0xFFF3F4F6))), Color(0xFF18181B).copy(alpha = 0.7f)),
+//    GalleryStyleEntry(R.string.gallery_style_typography, Brush.linearGradient(listOf(Color.White, Color(0xFFF9FAFB))), Color(0xFF18181B).copy(alpha = 0.7f)),
+//    GalleryStyleEntry(R.string.gallery_style_nothing_dot, Brush.linearGradient(listOf(Color.Black, Color(0xFF090909))), Color.White.copy(alpha = 0.6f)),
 )
 
 val galleryStyleCount: Int
