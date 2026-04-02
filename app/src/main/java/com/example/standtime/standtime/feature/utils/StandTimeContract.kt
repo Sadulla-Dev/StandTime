@@ -17,6 +17,26 @@ enum class AccentPalette {
     CORAL
 }
 
+enum class CustomClockFont {
+    MONO,
+    MONO_WIDE,
+    SERIF_CLASSIC,
+    SERIF_SOFT,
+    SANS_CLEAN,
+    SANS_BOLD,
+    CONDENSED,
+    CURSIVE,
+    TECH,
+    POSTER,
+    ELEGANT,
+    MINIMAL
+}
+
+enum class CustomClockLayout {
+    HORIZONTAL,
+    VERTICAL
+}
+
 enum class ClockStyle {
     NOTHING,
     PIXEL,
@@ -27,6 +47,35 @@ enum class ClockStyle {
 data class PomodoroPreset(
     val minutes: Int,
     val label: String
+)
+
+data class CustomColorValue(
+    val argb: Long
+)
+
+data class CustomClockStyleSettings(
+    val font: CustomClockFont = CustomClockFont.MONO,
+    val textColor: CustomColorValue = CustomColorValue(0xFFFFFFFF),
+    val backgroundStartColor: CustomColorValue = CustomColorValue(0xFF020617),
+    val showBackgroundCenterColor: Boolean = false,
+    val backgroundCenterColor: CustomColorValue = CustomColorValue(0xFF0F172A),
+    val showBackgroundEndColor: Boolean = false,
+    val backgroundEndColor: CustomColorValue = CustomColorValue(0xFF1E293B),
+    val scale: Float = 1f,
+    val offsetX: Float = 0f,
+    val offsetY: Float = 0f,
+    val layout: CustomClockLayout = CustomClockLayout.VERTICAL,
+    val showSeconds: Boolean = false,
+    val showDate: Boolean = true,
+    val showWeather: Boolean = false,
+    val recentColors: List<CustomColorValue> = listOf(
+        CustomColorValue(0xFFFFFFFF),
+        CustomColorValue(0xFF111827),
+        CustomColorValue(0xFFF97316),
+        CustomColorValue(0xFF38BDF8),
+        CustomColorValue(0xFF22C55E),
+        CustomColorValue(0xFFA855F7)
+    )
 )
 
 data class CalendarDayCell(
@@ -76,7 +125,9 @@ data class StandTimeUiState(
     val mediaTitle: String = "",
     val mediaSubtitle: String = "",
     val selectedGalleryStyleIndex: Int = 0,
-    val isMediaPlaying: Boolean = false
+    val isMediaPlaying: Boolean = false,
+    val customClockStyle: CustomClockStyleSettings = CustomClockStyleSettings(),
+    val savedCustomClockStyles: List<SavedCustomClockStyle> = emptyList()
 )
 
 sealed interface StandTimeIntent {
@@ -97,4 +148,19 @@ sealed interface StandTimeIntent {
     data object ResetPomodoro : StandTimeIntent
     data object ToggleMediaPlayback : StandTimeIntent
     data object SkipToNextTrack : StandTimeIntent
+    data class ChangeCustomClockFont(val font: CustomClockFont) : StandTimeIntent
+    data class ChangeCustomClockTextColor(val color: CustomColorValue) : StandTimeIntent
+    data class ChangeCustomClockBackgroundStart(val color: CustomColorValue) : StandTimeIntent
+    data class ToggleCustomClockBackgroundCenter(val enabled: Boolean) : StandTimeIntent
+    data class ChangeCustomClockBackgroundCenter(val color: CustomColorValue) : StandTimeIntent
+    data class ToggleCustomClockBackgroundEnd(val enabled: Boolean) : StandTimeIntent
+    data class ChangeCustomClockBackgroundEnd(val color: CustomColorValue) : StandTimeIntent
+    data class ChangeCustomClockScale(val scale: Float) : StandTimeIntent
+    data class ChangeCustomClockOffset(val x: Float, val y: Float) : StandTimeIntent
+    data class ChangeCustomClockLayout(val layout: CustomClockLayout) : StandTimeIntent
+    data class ToggleCustomClockSeconds(val enabled: Boolean) : StandTimeIntent
+    data class ToggleCustomClockDate(val enabled: Boolean) : StandTimeIntent
+    data class ToggleCustomClockWeather(val enabled: Boolean) : StandTimeIntent
+    data object SaveCustomClockStyle : StandTimeIntent
+    data class DeleteSavedCustomClockStyle(val id: String) : StandTimeIntent
 }

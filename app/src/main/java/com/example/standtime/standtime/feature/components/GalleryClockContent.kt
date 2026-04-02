@@ -12,6 +12,7 @@ import com.example.standtime.standtime.feature.components.style.BauhausClockStyl
 import com.example.standtime.standtime.feature.components.style.BinaryPulseClockStyle
 import com.example.standtime.standtime.feature.components.style.BraunClockStyle
 import com.example.standtime.standtime.feature.components.style.CoffeeClockStyle
+import com.example.standtime.standtime.feature.components.style.CustomClockStyle
 import com.example.standtime.standtime.feature.components.style.CyberGlitchClockStyle
 import com.example.standtime.standtime.feature.components.style.CyberpunkClockStyle
 import com.example.standtime.standtime.feature.components.style.FrostedStudioClockStyle
@@ -44,7 +45,52 @@ import com.example.standtime.standtime.feature.components.style.TypewriterClockS
 import com.example.standtime.standtime.feature.components.style.TypographyFocusClockStyle
 import com.example.standtime.standtime.feature.components.style.WordsClockStyle
 import com.example.standtime.standtime.feature.components.style.ZenArchitectureClockStyle
+import com.example.standtime.standtime.feature.utils.SavedCustomClockStyle
 import com.example.standtime.standtime.feature.utils.StandTimeLanguage
+
+private val builtinClockStyles =
+    listOf<@Composable (GalleryClockParts, StandTimeLanguage, Color, Modifier) -> Unit>(
+        ::NothingOfficialClockStyle,
+        ::Ps5ClockStyle,
+        ::TeslaClockStyle,
+        ::NasaClockStyle,
+        ::PixelStackClockStyle,
+        ::TokyoClockStyle,
+        ::BraunClockStyle,
+        ::TerminalClockStyle,
+        ::CyberpunkClockStyle,
+        ::PixelPetClockStyle,
+        ::LofiClockStyle,
+        ::RolexClockStyle,
+        ::GlassClockStyle,
+        ::LuxuryClockStyle,
+        ::BauhausClockStyle,
+        ::MacOsClockStyle,
+        ::WordsClockStyle,
+        ::CoffeeClockStyle,
+        ::NightOwlClockStyle,
+        ::AnalogZenClockStyle,
+        ::RetroFlipClockStyle,
+        ::BinaryPulseClockStyle,
+        ::SolarOrbitClockStyle,
+        ::TypewriterClockStyle,
+        ::LiquidGradientClockStyle,
+        ::AdminPanelClockStyle,
+        ::SynthwaveClockStyle,
+        ::ZenArchitectureClockStyle,
+        ::ArchitectStudioClockStyle,
+        ::OledStealthClockStyle,
+        ::NordicClockStyle,
+        ::SwissClockStyle,
+        ::IndustrialClockStyle,
+        ::FrostedStudioClockStyle,
+        ::TokyoNeonClockStyle,
+        ::PaperMinimalismClockStyle,
+        ::CyberGlitchClockStyle,
+        ::AbstractGeometricClockStyle,
+        ::TypographyFocusClockStyle,
+        ::NothingDotClockStyle
+    )
 
 @Composable
 fun GalleryClockContent(
@@ -52,65 +98,32 @@ fun GalleryClockContent(
     parts: GalleryClockParts,
     language: StandTimeLanguage,
     accentColor: Color,
+    customStyles: List<SavedCustomClockStyle> = emptyList(),
     modifier: Modifier = Modifier
 ) {
-
-    val clockStyles =
-        listOf<@Composable (GalleryClockParts, StandTimeLanguage, Color, Modifier) -> Unit>(
-            ::NothingOfficialClockStyle,
-            ::Ps5ClockStyle,
-            ::TeslaClockStyle,
-            ::NasaClockStyle,
-            ::PixelStackClockStyle,
-            ::TokyoClockStyle,
-            ::BraunClockStyle,
-            ::TerminalClockStyle,
-            ::CyberpunkClockStyle,
-            ::PixelPetClockStyle,
-            ::LofiClockStyle,
-            ::RolexClockStyle,
-            ::GlassClockStyle,
-            ::LuxuryClockStyle,
-            ::BauhausClockStyle,
-            ::MacOsClockStyle,
-            ::WordsClockStyle,
-            ::CoffeeClockStyle,
-            ::NightOwlClockStyle,
-            ::AnalogZenClockStyle,
-            ::RetroFlipClockStyle,
-            ::BinaryPulseClockStyle,
-            ::SolarOrbitClockStyle,
-            ::TypewriterClockStyle,
-            ::LiquidGradientClockStyle,
-            ::AdminPanelClockStyle,
-            ::SynthwaveClockStyle,
-            ::ZenArchitectureClockStyle,
-            ::ArchitectStudioClockStyle,
-            ::OledStealthClockStyle,
-            ::NordicClockStyle,
-            ::SwissClockStyle,
-            ::IndustrialClockStyle,
-            ::TokyoNeonClockStyle,
-            ::PaperMinimalismClockStyle,
-            ::CyberGlitchClockStyle,
-            ::AbstractGeometricClockStyle,
-            ::TypographyFocusClockStyle,
-            ::NothingDotClockStyle
-        )
-
     ResponsiveGalleryFrame(modifier = modifier) {
         AnimatedGalleryStyle(index = index) {
-            clockStyles.getOrNull(index)?.invoke(
-                parts,
-                language,
-                accentColor,
-                Modifier.fillMaxSize()
-            ) ?: FrostedStudioClockStyle(
-                parts,
-                language,
-                accentColor,
-                Modifier.fillMaxSize()
-            )
+            if (index < builtinClockStyles.size) {
+                builtinClockStyles[index].invoke(
+                    parts,
+                    language,
+                    accentColor,
+                    Modifier.fillMaxSize()
+                )
+            } else {
+                customStyles.getOrNull(index - builtinClockStyles.size)?.let { savedStyle ->
+                    CustomClockStyle(
+                        parts = parts,
+                        custom = savedStyle.settings,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } ?: FrostedStudioClockStyle(
+                    parts,
+                    language,
+                    accentColor,
+                    Modifier.fillMaxSize()
+                )
+            }
         }
     }
 }

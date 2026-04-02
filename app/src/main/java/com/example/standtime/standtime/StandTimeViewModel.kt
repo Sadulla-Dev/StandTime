@@ -3,6 +3,7 @@ package com.example.standtime.standtime
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.location.Geocoder
@@ -14,7 +15,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.standtime.standtime.feature.components.galleryStyles
 import com.example.standtime.standtime.feature.utils.CalendarDayCell
+import com.example.standtime.standtime.feature.utils.CustomClockLayout
+import com.example.standtime.standtime.feature.utils.CustomClockFont
+import com.example.standtime.standtime.feature.utils.CustomClockStyleSettings
+import com.example.standtime.standtime.feature.utils.CustomColorValue
+import com.example.standtime.standtime.feature.utils.SavedCustomClockStyle
 import com.example.standtime.standtime.feature.utils.StandTimeIntent
 import com.example.standtime.standtime.feature.utils.StandTimeLanguage
 import com.example.standtime.standtime.feature.utils.StandTimeMediaService
@@ -37,16 +44,27 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
+import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.coroutines.resume
 
 class StandTimeViewModel(
     application: Application
 ) : AndroidViewModel(application) {
+    companion object {
+        private const val KEY_GALLERY_INDEX = "selected_gallery_style_index"
+        private const val KEY_CUSTOM_CLOCK = "custom_clock_style_json"
+        private const val KEY_SAVED_CUSTOM_CLOCKS = "saved_custom_clock_styles_json"
+    }
+
+    private val prefs = application.getSharedPreferences("stand_time_prefs", Context.MODE_PRIVATE)
 
     private val _uiState = MutableStateFlow(
         StandTimeUiState(
-            locationPermissionGranted = hasLocationPermission()
+            locationPermissionGranted = hasLocationPermission(),
+            selectedGalleryStyleIndex = prefs.getInt(KEY_GALLERY_INDEX, 0),
+            customClockStyle = loadCustomClockStyle(),
+            savedCustomClockStyles = loadSavedCustomClockStyles()
         )
     )
     val uiState: StateFlow<StandTimeUiState> = _uiState.asStateFlow()
@@ -148,10 +166,328 @@ class StandTimeViewModel(
             StandTimeIntent.ToggleMediaPlayback -> StandTimeMediaService.togglePlayback()
             StandTimeIntent.SkipToNextTrack -> StandTimeMediaService.skipToNext()
 
-            is StandTimeIntent.ChangeGalleryStyleIndex -> _uiState.update { state ->
-                state.copy(selectedGalleryStyleIndex = intent.index)
+            is StandTimeIntent.ChangeGalleryStyleIndex -> {
+                _uiState.update { state ->
+                    state.copy(selectedGalleryStyleIndex = intent.index)
+                }
+                prefs.edit().putInt(KEY_GALLERY_INDEX, intent.index).apply()
+            }
+
+            is StandTimeIntent.ChangeCustomClockFont -> {
+                _uiState.update { state ->
+                    state.copy(customClockStyle = state.customClockStyle.copy(font = intent.font))
+                }
+                saveCustomClockStyle()
+            }
+
+            is StandTimeIntent.ChangeCustomClockTextColor -> {
+                _uiState.update { state ->
+                    state.copy(
+                        customClockStyle = state.customClockStyle
+                            .copy(textColor = intent.color)
+                            .withRecentColor(intent.color)
+                    )
+                }
+                saveCustomClockStyle()
+            }
+
+            is StandTimeIntent.ChangeCustomClockBackgroundStart -> {
+                _uiState.update { state ->
+                    state.copy(
+                        customClockStyle = state.customClockStyle
+                            .copy(backgroundStartColor = intent.color)
+                            .withRecentColor(intent.color)
+                    )
+                }
+                saveCustomClockStyle()
+            }
+
+            is StandTimeIntent.ToggleCustomClockBackgroundCenter -> {
+                _uiState.update { state ->
+                    state.copy(
+                        customClockStyle = state.customClockStyle.copy(showBackgroundCenterColor = intent.enabled)
+                    )
+                }
+                saveCustomClockStyle()
+            }
+
+            is StandTimeIntent.ChangeCustomClockBackgroundCenter -> {
+                _uiState.update { state ->
+                    state.copy(
+                        customClockStyle = state.customClockStyle
+                            .copy(
+                                showBackgroundCenterColor = true,
+                                backgroundCenterColor = intent.color
+                            )
+                            .withRecentColor(intent.color)
+                    )
+                }
+                saveCustomClockStyle()
+            }
+
+            is StandTimeIntent.ToggleCustomClockBackgroundEnd -> {
+                _uiState.update { state ->
+                    state.copy(
+                        customClockStyle = state.customClockStyle.copy(showBackgroundEndColor = intent.enabled)
+                    )
+                }
+                saveCustomClockStyle()
+            }
+
+            is StandTimeIntent.ChangeCustomClockBackgroundEnd -> {
+                _uiState.update { state ->
+                    state.copy(
+                        customClockStyle = state.customClockStyle
+                            .copy(
+                                showBackgroundEndColor = true,
+                                backgroundEndColor = intent.color
+                            )
+                            .withRecentColor(intent.color)
+                    )
+                }
+                saveCustomClockStyle()
+            }
+
+            is StandTimeIntent.ChangeCustomClockScale -> {
+                _uiState.update { state ->
+                    state.copy(customClockStyle = state.customClockStyle.copy(scale = intent.scale.coerceIn(0.45f, 3.5f)))
+                }
+                saveCustomClockStyle()
+            }
+
+            is StandTimeIntent.ChangeCustomClockOffset -> {
+                _uiState.update { state ->
+                    state.copy(
+                        customClockStyle = state.customClockStyle.copy(
+                            offsetX = intent.x,
+                            offsetY = intent.y
+                        )
+                    )
+                }
+                saveCustomClockStyle()
+            }
+
+            is StandTimeIntent.ChangeCustomClockLayout -> {
+                _uiState.update { state ->
+                    state.copy(customClockStyle = state.customClockStyle.copy(layout = intent.layout))
+                }
+                saveCustomClockStyle()
+            }
+
+            is StandTimeIntent.ToggleCustomClockSeconds -> {
+                _uiState.update { state ->
+                    state.copy(customClockStyle = state.customClockStyle.copy(showSeconds = intent.enabled))
+                }
+                saveCustomClockStyle()
+            }
+
+            is StandTimeIntent.ToggleCustomClockDate -> {
+                _uiState.update { state ->
+                    state.copy(customClockStyle = state.customClockStyle.copy(showDate = intent.enabled))
+                }
+                saveCustomClockStyle()
+            }
+
+            is StandTimeIntent.ToggleCustomClockWeather -> {
+                _uiState.update { state ->
+                    state.copy(customClockStyle = state.customClockStyle.copy(showWeather = intent.enabled))
+                }
+                saveCustomClockStyle()
+            }
+
+            StandTimeIntent.SaveCustomClockStyle -> {
+                _uiState.update { state ->
+                    val nextNumber = state.savedCustomClockStyles.size + 1
+                    val savedStyle = SavedCustomClockStyle(
+                        id = "custom_${System.currentTimeMillis()}_$nextNumber",
+                        name = "Custom $nextNumber",
+                        settings = state.customClockStyle.copy()
+                    )
+                    state.copy(
+                        savedCustomClockStyles = state.savedCustomClockStyles + savedStyle,
+                        selectedGalleryStyleIndex = builtinGalleryStyleCount() + state.savedCustomClockStyles.size
+                    )
+                }
+                prefs.edit()
+                    .putInt(KEY_GALLERY_INDEX, _uiState.value.selectedGalleryStyleIndex)
+                    .apply()
+                saveSavedCustomClockStyles()
+            }
+
+            is StandTimeIntent.DeleteSavedCustomClockStyle -> {
+                _uiState.update { state ->
+                    val updated = state.savedCustomClockStyles.filterNot { it.id == intent.id }
+                    val clampedIndex = state.selectedGalleryStyleIndex.coerceAtMost(
+                        (builtinGalleryStyleCount() + updated.size - 1).coerceAtLeast(0)
+                    )
+                    state.copy(
+                        savedCustomClockStyles = updated,
+                        selectedGalleryStyleIndex = clampedIndex
+                    )
+                }
+                prefs.edit()
+                    .putInt(KEY_GALLERY_INDEX, _uiState.value.selectedGalleryStyleIndex)
+                    .apply()
+                saveSavedCustomClockStyles()
             }
         }
+    }
+
+    private fun saveCustomClockStyle() {
+        val custom = _uiState.value.customClockStyle
+        val json = JSONObject().apply {
+            put("font", custom.font.name)
+            put("textColor", custom.textColor.argb)
+            put("backgroundStartColor", custom.backgroundStartColor.argb)
+            put("showBackgroundCenterColor", custom.showBackgroundCenterColor)
+            put("backgroundCenterColor", custom.backgroundCenterColor.argb)
+            put("showBackgroundEndColor", custom.showBackgroundEndColor)
+            put("backgroundEndColor", custom.backgroundEndColor.argb)
+            put("scale", custom.scale.toDouble())
+            put("offsetX", custom.offsetX.toDouble())
+            put("offsetY", custom.offsetY.toDouble())
+            put("layout", custom.layout.name)
+            put("showSeconds", custom.showSeconds)
+            put("showDate", custom.showDate)
+            put("showWeather", custom.showWeather)
+            put("recentColors", JSONArray().apply {
+                custom.recentColors.forEach { put(it.argb) }
+            })
+        }
+        prefs.edit().putString(KEY_CUSTOM_CLOCK, json.toString()).apply()
+    }
+
+    private fun loadCustomClockStyle(): CustomClockStyleSettings {
+        val raw = prefs.getString(KEY_CUSTOM_CLOCK, null) ?: return CustomClockStyleSettings()
+        return runCatching {
+            val json = JSONObject(raw)
+            val recentColors = buildList {
+                val colorsJson = json.optJSONArray("recentColors")
+                if (colorsJson != null) {
+                    repeat(colorsJson.length()) { add(CustomColorValue(colorsJson.optLong(it))) }
+                }
+            }.ifEmpty {
+                CustomClockStyleSettings().recentColors
+            }
+            CustomClockStyleSettings(
+                font = json.optString("font").takeIf { it.isNotBlank() }
+                    ?.let { runCatching { CustomClockFont.valueOf(it) }.getOrNull() }
+                    ?: CustomClockFont.MONO,
+                textColor = CustomColorValue(json.optLong("textColor", 0xFFFFFFFF)),
+                backgroundStartColor = CustomColorValue(json.optLong("backgroundStartColor", 0xFF020617)),
+                showBackgroundCenterColor = json.optBoolean("showBackgroundCenterColor", false),
+                backgroundCenterColor = CustomColorValue(json.optLong("backgroundCenterColor", 0xFF0F172A)),
+                showBackgroundEndColor = json.optBoolean(
+                    "showBackgroundEndColor",
+                    json.has("backgroundEndColor")
+                ),
+                backgroundEndColor = CustomColorValue(json.optLong("backgroundEndColor", 0xFF1E293B)),
+                scale = json.optDouble("scale", 1.0).toFloat(),
+                offsetX = json.optDouble("offsetX", 0.0).toFloat(),
+                offsetY = json.optDouble("offsetY", 0.0).toFloat(),
+                layout = json.optString("layout").takeIf { it.isNotBlank() }
+                    ?.let { runCatching { CustomClockLayout.valueOf(it) }.getOrNull() }
+                    ?: CustomClockLayout.VERTICAL,
+                showSeconds = json.optBoolean("showSeconds", false),
+                showDate = json.optBoolean("showDate", true),
+                showWeather = json.optBoolean("showWeather", false),
+                recentColors = recentColors
+            )
+        }.getOrDefault(CustomClockStyleSettings())
+    }
+
+    private fun CustomClockStyleSettings.withRecentColor(color: CustomColorValue): CustomClockStyleSettings {
+        val updated = listOf(color) + recentColors.filterNot { it.argb == color.argb }
+        return copy(recentColors = updated.take(10))
+    }
+
+    private fun saveSavedCustomClockStyles() {
+        val json = JSONArray().apply {
+            _uiState.value.savedCustomClockStyles.forEach { style ->
+                put(
+                    JSONObject().apply {
+                        put("id", style.id)
+                        put("name", style.name)
+                        put("settings", style.settings.toJson())
+                    }
+                )
+            }
+        }
+        prefs.edit().putString(KEY_SAVED_CUSTOM_CLOCKS, json.toString()).apply()
+    }
+
+    private fun loadSavedCustomClockStyles(): List<SavedCustomClockStyle> {
+        val raw = prefs.getString(KEY_SAVED_CUSTOM_CLOCKS, null) ?: return emptyList()
+        return runCatching {
+            val array = JSONArray(raw)
+            buildList {
+                repeat(array.length()) { index ->
+                    val item = array.optJSONObject(index) ?: return@repeat
+                    add(
+                        SavedCustomClockStyle(
+                            id = item.optString("id", "custom_$index"),
+                            name = item.optString("name", "Custom ${index + 1}"),
+                            settings = item.optJSONObject("settings")?.toCustomClockStyleSettings()
+                                ?: CustomClockStyleSettings()
+                        )
+                    )
+                }
+            }
+        }.getOrDefault(emptyList())
+    }
+
+    private fun builtinGalleryStyleCount(): Int = galleryStyles.size
+
+    private fun CustomClockStyleSettings.toJson(): JSONObject = JSONObject().apply {
+        put("font", font.name)
+        put("textColor", textColor.argb)
+        put("backgroundStartColor", backgroundStartColor.argb)
+        put("showBackgroundCenterColor", showBackgroundCenterColor)
+        put("backgroundCenterColor", backgroundCenterColor.argb)
+        put("showBackgroundEndColor", showBackgroundEndColor)
+        put("backgroundEndColor", backgroundEndColor.argb)
+        put("scale", scale.toDouble())
+        put("offsetX", offsetX.toDouble())
+        put("offsetY", offsetY.toDouble())
+        put("layout", layout.name)
+        put("showSeconds", showSeconds)
+        put("showDate", showDate)
+        put("showWeather", showWeather)
+        put("recentColors", JSONArray().apply {
+            recentColors.forEach { put(it.argb) }
+        })
+    }
+
+    private fun JSONObject.toCustomClockStyleSettings(): CustomClockStyleSettings {
+        val recentColors = buildList {
+            val colorsJson = optJSONArray("recentColors")
+            if (colorsJson != null) {
+                repeat(colorsJson.length()) { add(CustomColorValue(colorsJson.optLong(it))) }
+            }
+        }.ifEmpty {
+            CustomClockStyleSettings().recentColors
+        }
+        return CustomClockStyleSettings(
+            font = optString("font").takeIf { it.isNotBlank() }
+                ?.let { runCatching { CustomClockFont.valueOf(it) }.getOrNull() }
+                ?: CustomClockFont.MONO,
+            textColor = CustomColorValue(optLong("textColor", 0xFFFFFFFF)),
+            backgroundStartColor = CustomColorValue(optLong("backgroundStartColor", 0xFF020617)),
+            showBackgroundCenterColor = optBoolean("showBackgroundCenterColor", false),
+            backgroundCenterColor = CustomColorValue(optLong("backgroundCenterColor", 0xFF0F172A)),
+            showBackgroundEndColor = optBoolean("showBackgroundEndColor", has("backgroundEndColor")),
+            backgroundEndColor = CustomColorValue(optLong("backgroundEndColor", 0xFF1E293B)),
+            scale = optDouble("scale", 1.0).toFloat(),
+            offsetX = optDouble("offsetX", 0.0).toFloat(),
+            offsetY = optDouble("offsetY", 0.0).toFloat(),
+            layout = optString("layout").takeIf { it.isNotBlank() }
+                ?.let { runCatching { CustomClockLayout.valueOf(it) }.getOrNull() }
+                ?: CustomClockLayout.VERTICAL,
+            showSeconds = optBoolean("showSeconds", false),
+            showDate = optBoolean("showDate", true),
+            showWeather = optBoolean("showWeather", false),
+            recentColors = recentColors
+        )
     }
 
     private fun startClock() {

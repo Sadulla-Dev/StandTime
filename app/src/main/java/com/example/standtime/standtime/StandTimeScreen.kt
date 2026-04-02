@@ -7,6 +7,7 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,16 +30,19 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -54,10 +58,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standtime.R
+import com.example.standtime.standtime.feature.CustomClockStudioPage
 import com.example.standtime.standtime.feature.components.accentColor
 import com.example.standtime.standtime.feature.components.remainingPomodoroText
 import com.example.standtime.standtime.feature.components.GalleryClockContent
 import com.example.standtime.standtime.feature.components.galleryParts
+import com.example.standtime.standtime.feature.components.galleryStyles
 import com.example.standtime.standtime.feature.components.galleryStyleAt
 import com.example.standtime.standtime.feature.components.galleryStyleCount
 import com.example.standtime.standtime.feature.utils.AccentPalette
@@ -70,6 +76,7 @@ import com.example.standtime.standtime.feature.utils.localizedStringResource
 import com.example.standtime.ui.theme.CoralAccent
 import com.example.standtime.ui.theme.LimeAccent
 import com.example.standtime.ui.theme.SkyAccent
+import kotlinx.coroutines.launch
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Root
@@ -84,6 +91,7 @@ fun StandTimeRoute(
     val language = state.language
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     val accentColor = state.accentColor()
+    var isCustomStudioOpen by rememberSaveable { mutableStateOf(false) }
 
     var hasRequestedLocationPermission by rememberSaveable { mutableStateOf(false) }
     val locationPermissionLauncher = rememberLauncherForActivityResult(
@@ -121,55 +129,67 @@ fun StandTimeRoute(
     )
 
     val rootPagerState = rememberPagerState(pageCount = { 3 })
+    val scope = rememberCoroutineScope()
 
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(background)
-        ) {
-            HorizontalPager(
-                state = rootPagerState,
-                modifier = Modifier.fillMaxSize()
-            ) { page ->
-                when (page) {
-                    // ── Page 0: full‑screen gallery clock picker ──────────────
-                    0 -> ClockStylesPage(
-                        state = state,
+        if (isCustomStudioOpen) {
+            CustomClockStudioPage(
+                state = state,
+                language = language,
+                accentColor = accentColor,
+                onIntent = onIntent,
+                onClose = { isCustomStudioOpen = false },
+                onSave = {
+                    onIntent(StandTimeIntent.SaveCustomClockStyle)
+                    isCustomStudioOpen = false
+                }
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(background)
+            ) {
+                HorizontalPager(
+                    state = rootPagerState,
+                    modifier = Modifier.fillMaxSize()
+                ) { page ->
+                    when (page) {
+                        0 -> ClockStylesPage(
+                            state = state,
+                            language = language,
+                            accentColor = accentColor,
+                            onIntent = onIntent,
+                            onOpenCustomStudio = { isCustomStudioOpen = true }
+                        )
+                        1 -> DashboardPage(
+                            state = state,
+                            language = language,
+                            accentColor = accentColor,
+                            onIntent = onIntent,
+                            onRequestLocationPermission = requestLocationPermission,
+                            isLandscape = isLandscape
+                        )
+                        else -> SetupPage(
+                            state = state,
+                            language = language,
+                            accentColor = accentColor,
+                            onIntent = onIntent,
+                            onRequestLocationPermission = requestLocationPermission
+                        )
+                    }
+                }
+
+                if (rootPagerState.currentPage != 0) {
+                    PageIndicatorBar(
+                        currentPage = rootPagerState.currentPage,
                         language = language,
                         accentColor = accentColor,
-                        onIntent = onIntent
-                    )
-                    // ── Page 1: dashboard with gallery clock panel ────────────
-                    1 -> DashboardPage(
-                        state = state,
-                        language = language,
-                        accentColor = accentColor,
-                        onIntent = onIntent,
-                        onRequestLocationPermission = requestLocationPermission,
-                        isLandscape = isLandscape
-                    )
-                    // ── Page 2: settings ──────────────────────────────────────
-                    else -> SetupPage(
-                        state = state,
-                        language = language,
-                        accentColor = accentColor,
-                        onIntent = onIntent,
-                        onRequestLocationPermission = requestLocationPermission
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .padding(top = 6.dp)
                     )
                 }
-            }
-
-            // Floating nav indicator — only on page 1 & 2
-            if (rootPagerState.currentPage != 0) {
-                PageIndicatorBar(
-                    currentPage = rootPagerState.currentPage,
-                    language = language,
-                    accentColor = accentColor,
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(top = 6.dp)
-                )
             }
         }
     }
@@ -184,18 +204,62 @@ private fun ClockStylesPage(
     state: StandTimeUiState,
     language: StandTimeLanguage,
     accentColor: Color,
-    onIntent: (StandTimeIntent) -> Unit
+    onIntent: (StandTimeIntent) -> Unit,
+    onOpenCustomStudio: () -> Unit
 ) {
-    val stylesCount = galleryStyleCount
+    val stylesCount = galleryStyleCount(state.savedCustomClockStyles)
+    val lastStyleIndex = (stylesCount - 1).coerceAtLeast(0)
     val parts = state.galleryParts()
-    val galleryPagerState = rememberPagerState(pageCount = { stylesCount })
-    val currentIndex = galleryPagerState.currentPage
-    val currentStyle = galleryStyleAt(currentIndex)
-    val styleName = localizedStringResource(currentStyle.nameRes, language)
+    var pendingDeleteStyleId by rememberSaveable { mutableStateOf<String?>(null) }
+    val galleryPagerState = rememberPagerState(
+        initialPage = state.selectedGalleryStyleIndex.coerceIn(0, lastStyleIndex),
+        pageCount = { stylesCount }
+    )
+    val currentIndex = galleryPagerState.currentPage.coerceIn(0, lastStyleIndex)
+    val currentStyle = galleryStyleAt(currentIndex, state.savedCustomClockStyles)
+    val styleName = currentStyle.label ?: localizedStringResource(currentStyle.nameRes ?: R.string.gallery_style_custom, language)
+
+    LaunchedEffect(stylesCount, galleryPagerState.currentPage) {
+        if (galleryPagerState.currentPage > lastStyleIndex) {
+            galleryPagerState.scrollToPage(lastStyleIndex)
+        }
+    }
 
     // Persist selected style to state
     LaunchedEffect(currentIndex) {
         onIntent(StandTimeIntent.ChangeGalleryStyleIndex(currentIndex))
+    }
+
+    val customStyleToDelete = state.savedCustomClockStyles.firstOrNull { it.id == pendingDeleteStyleId }
+    if (customStyleToDelete != null) {
+        AlertDialog(
+            onDismissRequest = { pendingDeleteStyleId = null },
+            title = { Text(localizedStringResource(R.string.custom_delete_title, language)) },
+            text = {
+                Text(
+                    localizedStringResource(
+                        R.string.custom_delete_message,
+                        language,
+                        customStyleToDelete.name
+                    )
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onIntent(StandTimeIntent.DeleteSavedCustomClockStyle(customStyleToDelete.id))
+                        pendingDeleteStyleId = null
+                    }
+                ) {
+                    Text(localizedStringResource(R.string.custom_delete_confirm, language))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { pendingDeleteStyleId = null }) {
+                    Text(localizedStringResource(R.string.custom_cancel, language))
+                }
+            }
+        )
     }
 
     Box(
@@ -208,13 +272,23 @@ private fun ClockStylesPage(
             modifier = Modifier.fillMaxSize()
         ) { page ->
             Box(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .combinedClickable(
+                        onClick = {},
+                        onLongClick = {
+                            state.savedCustomClockStyles
+                                .getOrNull(page - galleryStyles.size)
+                                ?.let { pendingDeleteStyleId = it.id }
+                        }
+                    )
             ) {
                 GalleryClockContent(
                     index = page,
                     parts = parts,
                     language = language,
                     accentColor = accentColor,
+                    customStyles = state.savedCustomClockStyles,
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -265,27 +339,34 @@ private fun ClockStylesPage(
             )
         }
 
-        // ── Bottom overlay: scroll progress dots ──────────────────────────
-        Row(
+        Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 24.dp)
-                .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(5.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(horizontal = 20.dp, vertical = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            repeat(stylesCount) { index ->
-                Box(
-                    modifier = Modifier
-                        .width(if (index == currentIndex) 22.dp else 6.dp)
-                        .height(5.dp)
-                        .clip(RoundedCornerShape(50))
-                        .background(
-                            Color.White.copy(
-                                alpha = if (index == currentIndex) 0.95f else 0.25f
+            Button(onClick = onOpenCustomStudio) {
+                Text(localizedStringResource(R.string.custom_create_button, language))
+            }
+            Row(
+                modifier = Modifier.horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                repeat(stylesCount) { index ->
+                    Box(
+                        modifier = Modifier
+                            .width(if (index == currentIndex) 22.dp else 6.dp)
+                            .height(5.dp)
+                            .clip(RoundedCornerShape(50))
+                            .background(
+                                Color.White.copy(
+                                    alpha = if (index == currentIndex) 0.95f else 0.25f
+                                )
                             )
-                        )
-                )
+                    )
+                }
             }
         }
     }
@@ -362,13 +443,20 @@ private fun GalleryClockPanel(
     onIntent: (StandTimeIntent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val stylesCount = galleryStyleCount
+    val stylesCount = galleryStyleCount(state.savedCustomClockStyles)
+    val lastStyleIndex = (stylesCount - 1).coerceAtLeast(0)
     val parts = state.galleryParts()
     // Keep pager in sync with the selected style from page 0
-    val initialPage = state.selectedGalleryStyleIndex.coerceIn(0, stylesCount - 1)
+    val initialPage = state.selectedGalleryStyleIndex.coerceIn(0, lastStyleIndex)
     val pagerState = rememberPagerState(initialPage = initialPage, pageCount = { stylesCount })
-    val currentIndex = pagerState.currentPage
-    val currentStyle = galleryStyleAt(currentIndex)
+    val currentIndex = pagerState.currentPage.coerceIn(0, lastStyleIndex)
+    val currentStyle = galleryStyleAt(currentIndex, state.savedCustomClockStyles)
+
+    LaunchedEffect(stylesCount, pagerState.currentPage) {
+        if (pagerState.currentPage > lastStyleIndex) {
+            pagerState.scrollToPage(lastStyleIndex)
+        }
+    }
 
     LaunchedEffect(currentIndex) {
         onIntent(StandTimeIntent.ChangeGalleryStyleIndex(currentIndex))
@@ -390,6 +478,7 @@ private fun GalleryClockPanel(
                     parts = parts,
                     language = language,
                     accentColor = accentColor,
+                    customStyles = state.savedCustomClockStyles,
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -397,7 +486,7 @@ private fun GalleryClockPanel(
 
         // Subtle style name label at bottom
         Text(
-            text = localizedStringResource(currentStyle.nameRes, language),
+            text = currentStyle.label ?: localizedStringResource(currentStyle.nameRes ?: R.string.gallery_style_custom, language),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .clip(RoundedCornerShape(999.dp))
@@ -1166,6 +1255,33 @@ private fun AccentChip(
                 Box(
                     modifier = Modifier
                         .size(10.dp)
+                        .clip(CircleShape)
+                        .background(color)
+                )
+                Text(label)
+            }
+        }
+    )
+}
+
+@Composable
+private fun ColorOptionChip(
+    label: String,
+    color: Color,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    FilterChip(
+        selected = selected,
+        onClick = onClick,
+        label = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(7.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(12.dp)
                         .clip(CircleShape)
                         .background(color)
                 )

@@ -2,9 +2,11 @@ package com.example.standtime.standtime.feature.components
 
 import androidx.annotation.StringRes
 import com.example.standtime.R
+import com.example.standtime.standtime.feature.utils.SavedCustomClockStyle
 
 data class GalleryStyleEntry(
-    @param:StringRes val nameRes: Int,
+    @param:StringRes val nameRes: Int? = null,
+    val label: String? = null
 )
 
 val galleryStyles: List<GalleryStyleEntry> = listOf(
@@ -47,10 +49,17 @@ val galleryStyles: List<GalleryStyleEntry> = listOf(
     GalleryStyleEntry(R.string.gallery_style_glitch),
     GalleryStyleEntry(R.string.gallery_style_abstract),
     GalleryStyleEntry(R.string.gallery_style_typography),
-    GalleryStyleEntry(R.string.gallery_style_nothing_dot),
+    GalleryStyleEntry(R.string.gallery_style_nothing_dot)
 )
 
-val galleryStyleCount: Int
-    get() = galleryStyles.size
+fun galleryStyleCount(savedCustomStyles: List<SavedCustomClockStyle>): Int = galleryStyles.size + savedCustomStyles.size
 
-fun galleryStyleAt(index: Int): GalleryStyleEntry = galleryStyles[index]
+fun galleryStyleAt(index: Int, savedCustomStyles: List<SavedCustomClockStyle>): GalleryStyleEntry {
+    val safeIndex = index.coerceIn(0, galleryStyleCount(savedCustomStyles) - 1)
+    return if (safeIndex < galleryStyles.size) {
+        galleryStyles[safeIndex]
+    } else {
+        val customStyle = savedCustomStyles[safeIndex - galleryStyles.size]
+        GalleryStyleEntry(label = customStyle.name)
+    }
+}
