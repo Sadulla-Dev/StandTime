@@ -15,13 +15,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standtime.R
+import com.example.standtime.standtime.feature.components.GalleryClockParts
+import com.example.standtime.standtime.feature.components.LocalGalleryScaleFactor
 import com.example.standtime.standtime.feature.utils.StandTimeLanguage
 import com.example.standtime.standtime.feature.utils.localizedStringResource
 
 @Composable
 fun OledStealthClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, accentColor: Color, modifier: Modifier = Modifier) {
     val scale = LocalGalleryScaleFactor.current
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+    Box(
+        modifier = modifier.background(Brush.linearGradient(listOf(Color.Black, Color(0xFF040404)))),
+        contentAlignment = Alignment.Center
+    ) {
         Box {
             Text(
                 "${parts.hours}${parts.minutes}",

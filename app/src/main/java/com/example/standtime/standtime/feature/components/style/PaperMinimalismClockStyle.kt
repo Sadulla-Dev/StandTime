@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
@@ -21,6 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.standtime.standtime.feature.components.GalleryClockParts
+import com.example.standtime.standtime.feature.components.LocalGalleryScaleFactor
 import com.example.standtime.standtime.feature.utils.StandTimeLanguage
 
 @Composable
@@ -28,7 +31,8 @@ fun PaperMinimalismClockStyle(parts: GalleryClockParts, language: StandTimeLangu
     val scale = LocalGalleryScaleFactor.current
     Box(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(Brush.linearGradient(listOf(Color(0xFFE5E7EB), Color(0xFFD4D4D8)))),
         contentAlignment = Alignment.Center
     ) {
         Row(

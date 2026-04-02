@@ -12,13 +12,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standtime.R
+import com.example.standtime.standtime.feature.components.GalleryClockParts
 import com.example.standtime.standtime.feature.utils.StandTimeLanguage
 import com.example.standtime.standtime.feature.utils.localizedStringResource
 
@@ -26,7 +31,16 @@ import com.example.standtime.standtime.feature.utils.localizedStringResource
 fun CyberGlitchClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, accentColor: Color, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(
+                Brush.linearGradient(
+                    listOf(
+                        Color(0xFF1649E2),
+                        Color(0xFF0A1020),
+                        Color(0x0F37F30D)
+                    )
+                )
+            ),
         contentAlignment = Alignment.Center
     ) {
         // Horizontal glitch line
@@ -67,6 +81,13 @@ fun CyberGlitchClockStyle(parts: GalleryClockParts, language: StandTimeLanguage,
                 Text(
                     text = "${parts.hours}${parts.minutes}",
                     color = Color(0xFF22D3EE),
+                    style = TextStyle(
+                        shadow = Shadow(
+                            color = Color(0xFF22D3EE).copy(alpha = 0.55f),
+                            offset = Offset(0f, 0f),
+                            blurRadius = 28f
+                        )
+                    ),
                     fontSize = 240.sp,
                     fontWeight = FontWeight.Black,
                     fontStyle = FontStyle.Italic,

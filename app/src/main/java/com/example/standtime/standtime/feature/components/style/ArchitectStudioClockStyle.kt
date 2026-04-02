@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standtime.R
+import com.example.standtime.standtime.feature.components.GalleryClockParts
 import com.example.standtime.standtime.feature.utils.StandTimeLanguage
 import com.example.standtime.standtime.feature.utils.localizedStringResource
 
@@ -25,7 +26,7 @@ fun ArchitectStudioClockStyle(parts: GalleryClockParts, language: StandTimeLangu
             Text(parts.hours, color = Color.Black, fontSize = 176.sp, fontWeight = FontWeight.Black)
         }
         Column(modifier = Modifier.weight(1f).fillMaxHeight().background(Color(0xFFF5F5F5)).padding(24.dp)) {
-            Text(parts.minutes, color = Color(0xFFA1A1AA), fontSize = 120.sp, fontWeight = FontWeight.Light)
+            Text(parts.minutes, color = Color(0xFF52525B), fontSize = 120.sp, fontWeight = FontWeight.Light)
             Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.Bottom, horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween) {
                 Text(localizedStringResource(R.string.gallery_architect_grid, language), color = Color.Black, fontSize = 12.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 32.dp))
                 Column(horizontalAlignment = Alignment.End) {

@@ -30,7 +30,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -57,10 +56,10 @@ import androidx.compose.ui.unit.sp
 import com.example.standtime.R
 import com.example.standtime.standtime.feature.components.accentColor
 import com.example.standtime.standtime.feature.components.remainingPomodoroText
-import com.example.standtime.standtime.feature.components.style.GalleryClockContent as StyleGalleryClockContent
-import com.example.standtime.standtime.feature.components.style.galleryParts
-import com.example.standtime.standtime.feature.components.style.galleryStyleAt
-import com.example.standtime.standtime.feature.components.style.galleryStyleCount
+import com.example.standtime.standtime.feature.components.GalleryClockContent
+import com.example.standtime.standtime.feature.components.galleryParts
+import com.example.standtime.standtime.feature.components.galleryStyleAt
+import com.example.standtime.standtime.feature.components.galleryStyleCount
 import com.example.standtime.standtime.feature.utils.AccentPalette
 import com.example.standtime.standtime.feature.utils.CalendarDayCell
 import com.example.standtime.standtime.feature.utils.StandTimeIntent
@@ -202,20 +201,16 @@ private fun ClockStylesPage(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(currentStyle.background)
     ) {
         // Full‑screen vertical pager — each page IS the clock style
         VerticalPager(
             state = galleryPagerState,
             modifier = Modifier.fillMaxSize()
         ) { page ->
-            val pageStyle = galleryStyleAt(page)
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(pageStyle.background)
+                modifier = Modifier.fillMaxSize()
             ) {
-                StyleGalleryClockContent(
+                GalleryClockContent(
                     index = page,
                     parts = parts,
                     language = language,
@@ -240,11 +235,15 @@ private fun ClockStylesPage(
                     language,
                     state.batteryLevel
                 ),
+                modifier = Modifier
+                    .clip(RoundedCornerShape(999.dp))
+                    .background(Color.Black.copy(alpha = 0.28f))
+                    .padding(horizontal = 12.dp, vertical = 6.dp),
                 fontFamily = FontFamily.Monospace,
                 fontWeight = FontWeight.Bold,
                 fontSize = 11.sp,
                 letterSpacing = 1.2.sp,
-                color = currentStyle.overlayColor.copy(alpha = 0.75f)
+                color = Color.White
             )
             Text(
                 text = localizedStringResource(
@@ -254,11 +253,15 @@ private fun ClockStylesPage(
                     currentIndex + 1,
                     stylesCount
                 ),
+                modifier = Modifier
+                    .clip(RoundedCornerShape(999.dp))
+                    .background(Color.Black.copy(alpha = 0.28f))
+                    .padding(horizontal = 12.dp, vertical = 6.dp),
                 fontFamily = FontFamily.Monospace,
                 fontWeight = FontWeight.Medium,
                 fontSize = 11.sp,
                 letterSpacing = 1.2.sp,
-                color = currentStyle.overlayColor.copy(alpha = 0.75f)
+                color = Color.White
             )
         }
 
@@ -278,7 +281,7 @@ private fun ClockStylesPage(
                         .height(5.dp)
                         .clip(RoundedCornerShape(50))
                         .background(
-                            currentStyle.overlayColor.copy(
+                            Color.White.copy(
                                 alpha = if (index == currentIndex) 0.95f else 0.25f
                             )
                         )
@@ -374,20 +377,15 @@ private fun GalleryClockPanel(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(28.dp))
-            // Let the clock's own background show through
-            .background(currentStyle.background)
     ) {
         VerticalPager(
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { page ->
-            val pageStyle = galleryStyleAt(page)
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(pageStyle.background)
+                modifier = Modifier.fillMaxSize()
             ) {
-                StyleGalleryClockContent(
+                GalleryClockContent(
                     index = page,
                     parts = parts,
                     language = language,
@@ -400,14 +398,16 @@ private fun GalleryClockPanel(
         // Subtle style name label at bottom
         Text(
             text = localizedStringResource(currentStyle.nameRes, language),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .clip(RoundedCornerShape(999.dp))
+                .background(Color.Black.copy(alpha = 0.28f))
+                .padding(horizontal = 12.dp, vertical = 6.dp),
             fontFamily = FontFamily.Monospace,
             fontWeight = FontWeight.Medium,
             fontSize = 10.sp,
             letterSpacing = 1.5.sp,
-            color = currentStyle.overlayColor.copy(alpha = 0.55f),
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 14.dp)
+            color = Color.White
         )
     }
 }

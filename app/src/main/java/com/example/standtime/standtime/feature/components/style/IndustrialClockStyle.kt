@@ -13,15 +13,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.standtime.standtime.feature.components.GalleryClockParts
 import com.example.standtime.standtime.feature.utils.StandTimeLanguage
 
 @Composable
 fun IndustrialClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, accentColor: Color, modifier: Modifier = Modifier) {
-    Row(modifier = modifier, horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = modifier.background(Brush.linearGradient(listOf(Color(0xFF1C1C1C), Color(0xFF090909)))),
+        horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Box(modifier = Modifier.weight(1f).clip(RoundedCornerShape(32.dp)).background(Color.White.copy(alpha = 0.06f)).padding(24.dp), contentAlignment = Alignment.Center) {
             Text(parts.hours, color = Color(0xFFF4F4F5), fontSize = 136.sp, fontFamily = FontFamily.Monospace)
         }

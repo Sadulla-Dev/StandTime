@@ -1,5 +1,6 @@
 package com.example.standtime.standtime.feature.components.style
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,11 +9,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standtime.R
+import com.example.standtime.standtime.feature.components.GalleryClockParts
+import com.example.standtime.standtime.feature.components.LocalGalleryScaleFactor
 import com.example.standtime.standtime.feature.utils.StandTimeLanguage
 import com.example.standtime.standtime.feature.utils.localizedStringResource
 
@@ -20,7 +24,9 @@ import com.example.standtime.standtime.feature.utils.localizedStringResource
 fun SwissClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, accentColor: Color, modifier: Modifier = Modifier) {
     val scale = LocalGalleryScaleFactor.current
     Column(
-        modifier = modifier.padding((16f * scale).coerceIn(10f, 24f).dp),
+        modifier = modifier
+            .background(Brush.linearGradient(listOf(Color(0xFFE63946), Color(0xFFB91C1C))))
+            .padding((16f * scale).coerceIn(10f, 24f).dp),
         verticalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween
     ) {
         Text(

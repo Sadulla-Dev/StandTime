@@ -1,4 +1,4 @@
-package com.example.standtime.standtime.feature.components.style
+package com.example.standtime.standtime.feature.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,9 +14,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -92,7 +105,7 @@ fun GalleryMetricCard(
     contentColor: Color
 ) {
     val scale = LocalGalleryScaleFactor.current
-    androidx.compose.foundation.layout.Column(
+    Column(
         modifier = Modifier
             .clip(RoundedCornerShape(22.dp))
             .background(background)
@@ -119,7 +132,7 @@ fun GalleryWidgetCard(
     secondary: String
 ) {
     val scale = LocalGalleryScaleFactor.current
-    androidx.compose.foundation.layout.Column(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(28.dp))
@@ -197,7 +210,7 @@ fun RowScope.GlassTimeBlock(value: String) {
 @Composable
 fun BauhausColumn(top: Char, bottom: Char, topColor: Color, bottomColor: Color, topRound: Boolean) {
     val scale = LocalGalleryScaleFactor.current
-    androidx.compose.foundation.layout.Column(
+    Column(
         verticalArrangement = Arrangement.spacedBy(14.dp),
         modifier = Modifier.padding(horizontal = 8.dp)
     ) {
@@ -263,16 +276,15 @@ fun ResponsiveGalleryFrame(
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         val ratio = maxWidth.value / maxHeight.value
         val smallestSide = min(maxWidth.value, maxHeight.value)
-        // Pick a design canvas by current aspect ratio so styles stay readable
-        // both in full-screen pager and half-screen dashboard panel.
+
         val (baseWidth, baseHeight) = when {
-            ratio < 0.9f -> 390f to 780f      // portrait / narrow panes
-            smallestSide < 330f -> 700f to 560f // compact dashboard pane
-            ratio < 1.5f -> 760f to 520f      // medium tablets / compact landscape
-            else -> 920f to 360f              // wide landscape
+            ratio < 0.9f -> 390f to 780f
+            smallestSide < 330f -> 700f to 560f
+            ratio < 1.5f -> 760f to 520f
+            else -> 920f to 360f
         }
-        val safeWidth = maxWidth.value * 0.94f
-        val safeHeight = maxHeight.value * 0.94f
+        val safeWidth = maxWidth.value * 0.9f
+        val safeHeight = maxHeight.value * 0.9f
         val scale = min(safeWidth / baseWidth, safeHeight / baseHeight).coerceIn(0.58f, 1.25f)
         val density = LocalDensity.current
         val scaledDensity = Density(
@@ -294,4 +306,52 @@ fun ResponsiveGalleryFrame(
             }
         }
     }
+}
+
+@Composable
+fun AnimatedGalleryStyle(
+    index: Int,
+    content: @Composable BoxScope.() -> Unit
+) {
+    var visible by remember(index) { mutableStateOf(false) }
+    LaunchedEffect(index) {
+        visible = false
+        visible = true
+    }
+    val alpha by animateFloatAsState(
+        targetValue = if (visible) 1f else 0.84f,
+        animationSpec = tween(durationMillis = 420, easing = FastOutSlowInEasing),
+        label = "galleryAlpha"
+    )
+    val scale by animateFloatAsState(
+        targetValue = if (visible) 1f else 0.965f,
+        animationSpec = tween(durationMillis = 520, easing = FastOutSlowInEasing),
+        label = "galleryScale"
+    )
+    val settleY by animateFloatAsState(
+        targetValue = if (visible) 0f else 26f,
+        animationSpec = tween(durationMillis = 520, easing = FastOutSlowInEasing),
+        label = "galleryTranslateY"
+    )
+    val drift by rememberInfiniteTransition(label = "galleryDrift").animateFloat(
+        initialValue = -3f,
+        targetValue = 3f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 5000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "galleryFloat"
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .graphicsLayer {
+                this.alpha = alpha
+                scaleX = scale
+                scaleY = scale
+                translationY = settleY + drift
+            },
+        content = content
+    )
 }

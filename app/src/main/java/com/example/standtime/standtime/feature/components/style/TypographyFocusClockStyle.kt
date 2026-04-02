@@ -11,15 +11,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.standtime.standtime.feature.components.GalleryClockParts
+import com.example.standtime.standtime.feature.components.LocalGalleryScaleFactor
 import com.example.standtime.standtime.feature.utils.StandTimeLanguage
 
 @Composable
 fun TypographyFocusClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, accentColor: Color, modifier: Modifier = Modifier) {
+    val scale = LocalGalleryScaleFactor.current
     val hourInt = parts.hours.toIntOrNull() ?: 0
     val hourWord = when (language) {
         StandTimeLanguage.UZBEK -> getUzbekHourWord(hourInt)
@@ -30,27 +34,38 @@ fun TypographyFocusClockStyle(parts: GalleryClockParts, language: StandTimeLangu
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(
+                Brush.linearGradient(
+                    listOf(
+                        Color(0xFFF1E8D8),
+                        Color(0xFFE4D8C4),
+                        Color(0xFFD7C8AE)
+                    )
+                )
+            ),
         contentAlignment = Alignment.CenterStart
     ) {
         Column(
-            modifier = Modifier.padding(64.dp)
+            modifier = Modifier.padding(
+                horizontal = (64f * scale).coerceIn(28f, 74f).dp,
+                vertical = (42f * scale).coerceIn(24f, 56f).dp
+            )
         ) {
             Text(
                 text = if (language == StandTimeLanguage.UZBEK) "HOZIR" else "IT IS",
-                color = Color.Black,
-                fontSize = 120.sp,
+                color = Color(0xFF18181B),
+                fontSize = (120f * scale).coerceIn(56f, 128f).sp,
                 fontWeight = FontWeight.Black,
                 fontStyle = FontStyle.Italic,
-                lineHeight = 100.sp
+                lineHeight = (100f * scale).coerceIn(48f, 106f).sp
             )
             Text(
                 text = hourWord.uppercase(),
-                color = Color.Black,
-                fontSize = 120.sp,
+                color = Color(0xFF111827),
+                fontSize = (120f * scale).coerceIn(56f, 128f).sp,
                 fontWeight = FontWeight.Black,
                 fontStyle = FontStyle.Italic,
-                lineHeight = 100.sp
+                lineHeight = (100f * scale).coerceIn(48f, 106f).sp
             )
             Text(
                 text = when (language) {
@@ -58,27 +73,27 @@ fun TypographyFocusClockStyle(parts: GalleryClockParts, language: StandTimeLangu
                     StandTimeLanguage.RUSSIAN -> "${parts.minutes} МИНУТ"
                     else -> "PAST ${parts.minutes}"
                 },
-                color = Color(0xFFD4D4D8),
-                fontSize = 120.sp,
+                color = Color(0xFF6B4F3A),
+                fontSize = (120f * scale).coerceIn(56f, 128f).sp,
                 fontWeight = FontWeight.Black,
                 fontStyle = FontStyle.Italic,
-                lineHeight = 100.sp
+                lineHeight = (100f * scale).coerceIn(48f, 106f).sp
             )
             Text(
                 text = if (language == StandTimeLanguage.UZBEK) "O'TDI." else "NOW.",
-                color = Color.Black,
-                fontSize = 120.sp,
+                color = Color(0xFF18181B),
+                fontSize = (120f * scale).coerceIn(56f, 128f).sp,
                 fontWeight = FontWeight.Black,
                 fontStyle = FontStyle.Italic,
-                lineHeight = 100.sp
+                lineHeight = (100f * scale).coerceIn(48f, 106f).sp
             )
 
             Box(
                 modifier = Modifier
-                    .padding(top = 48.dp)
-                    .width(128.dp)
+                    .padding(top = (48f * scale).coerceIn(20f, 52f).dp)
+                    .width((128f * scale).coerceIn(72f, 138f).dp)
                     .height(4.dp)
-                    .background(Color.Black)
+                    .background(accentColor.copy(alpha = 0.9f))
             )
         }
     }

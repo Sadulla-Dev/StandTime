@@ -14,12 +14,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standtime.R
+import com.example.standtime.standtime.feature.components.GalleryClockParts
+import com.example.standtime.standtime.feature.components.LocalGalleryScaleFactor
 import com.example.standtime.standtime.feature.utils.StandTimeLanguage
 import com.example.standtime.standtime.feature.utils.localizedStringResource
 
@@ -28,7 +31,8 @@ fun AbstractGeometricClockStyle(parts: GalleryClockParts, language: StandTimeLan
     val scale = LocalGalleryScaleFactor.current
     Box(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(Brush.linearGradient(listOf(Color(0xFFF9FAFB), Color(0xFFF3F4F6)))),
         contentAlignment = Alignment.Center
     ) {
         // Large dark circle
