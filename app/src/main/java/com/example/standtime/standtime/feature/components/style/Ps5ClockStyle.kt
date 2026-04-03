@@ -27,9 +27,9 @@ import com.example.standtime.standtime.feature.utils.localizedStringResource
 @Composable
 fun Ps5ClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, accentColor: Color, modifier: Modifier = Modifier) {
     Box(modifier = modifier.background(Brush.verticalGradient(listOf(Color.Black, Color(0xFF071A3C))))) {
-        Box(modifier = Modifier.size(520.dp).align(Alignment.TopCenter).clip(CircleShape).background(Color(0x332567FF)))
+        Box(modifier = Modifier.padding( 40.dp).size(480.dp).align(Alignment.TopCenter).clip(CircleShape).background(Color(0x332567FF)))
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "${parts.hours} | ${parts.minutes}", style = TextStyle(fontWeight = FontWeight.Light, fontSize = 88.sp, letterSpacing = 6.sp), color = Color.White)
+            Text(text = "${parts.hours} | ${parts.minutes}", style = TextStyle(fontWeight = FontWeight.Light, fontSize = 100.sp, letterSpacing = 6.sp), color = Color.White)
             Text(
                 text = localizedStringResource(R.string.gallery_ps5_symbols, language),
                 modifier = Modifier.padding(top = 20.dp),

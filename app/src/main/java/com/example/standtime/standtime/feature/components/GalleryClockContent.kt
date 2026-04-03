@@ -8,6 +8,7 @@ import com.example.standtime.standtime.feature.components.style.AbstractGeometri
 import com.example.standtime.standtime.feature.components.style.AdminPanelClockStyle
 import com.example.standtime.standtime.feature.components.style.AnalogZenClockStyle
 import com.example.standtime.standtime.feature.components.style.ArchitectStudioClockStyle
+import com.example.standtime.standtime.feature.components.style.AuraPulseClockStyle
 import com.example.standtime.standtime.feature.components.style.BauhausClockStyle
 import com.example.standtime.standtime.feature.components.style.BinaryPulseClockStyle
 import com.example.standtime.standtime.feature.components.style.BraunClockStyle
@@ -17,14 +18,12 @@ import com.example.standtime.standtime.feature.components.style.CyberGlitchClock
 import com.example.standtime.standtime.feature.components.style.CyberpunkClockStyle
 import com.example.standtime.standtime.feature.components.style.FrostedStudioClockStyle
 import com.example.standtime.standtime.feature.components.style.GlassClockStyle
+import com.example.standtime.standtime.feature.components.style.HorizonStudioClockStyle
 import com.example.standtime.standtime.feature.components.style.IndustrialClockStyle
-import com.example.standtime.standtime.feature.components.style.LiquidGradientClockStyle
 import com.example.standtime.standtime.feature.components.style.LofiClockStyle
 import com.example.standtime.standtime.feature.components.style.LuxuryClockStyle
 import com.example.standtime.standtime.feature.components.style.MacOsClockStyle
 import com.example.standtime.standtime.feature.components.style.NasaClockStyle
-import com.example.standtime.standtime.feature.components.style.NightOwlClockStyle
-import com.example.standtime.standtime.feature.components.style.NordicClockStyle
 import com.example.standtime.standtime.feature.components.style.NothingDotClockStyle
 import com.example.standtime.standtime.feature.components.style.NothingOfficialClockStyle
 import com.example.standtime.standtime.feature.components.style.OledStealthClockStyle
@@ -39,6 +38,7 @@ import com.example.standtime.standtime.feature.components.style.SwissClockStyle
 import com.example.standtime.standtime.feature.components.style.SynthwaveClockStyle
 import com.example.standtime.standtime.feature.components.style.TerminalClockStyle
 import com.example.standtime.standtime.feature.components.style.TeslaClockStyle
+import com.example.standtime.standtime.feature.components.style.ContrastSplitClockStyle
 import com.example.standtime.standtime.feature.components.style.TokyoClockStyle
 import com.example.standtime.standtime.feature.components.style.TokyoNeonClockStyle
 import com.example.standtime.standtime.feature.components.style.TypewriterClockStyle
@@ -51,7 +51,9 @@ import com.example.standtime.standtime.feature.utils.StandTimeLanguage
 private val builtinClockStyles =
     listOf<@Composable (GalleryClockParts, StandTimeLanguage, Color, Modifier) -> Unit>(
         ::NothingOfficialClockStyle,
-        ::TeslaClockStyle,
+        ::ContrastSplitClockStyle,
+        ::AuraPulseClockStyle,
+        ::NothingDotClockStyle,
         ::NasaClockStyle,
         ::PixelStackClockStyle,
         ::TokyoClockStyle,
@@ -62,6 +64,7 @@ private val builtinClockStyles =
         ::LofiClockStyle,
         ::RolexClockStyle,
         ::AnalogZenClockStyle,
+        ::TeslaClockStyle,
         ::GlassClockStyle,
         ::LuxuryClockStyle,
         ::BauhausClockStyle,
@@ -85,7 +88,7 @@ private val builtinClockStyles =
         ::CyberGlitchClockStyle,
         ::AbstractGeometricClockStyle,
         ::TypographyFocusClockStyle,
-        ::NothingDotClockStyle,
+        ::HorizonStudioClockStyle,
         ::Ps5ClockStyle,
     )
 

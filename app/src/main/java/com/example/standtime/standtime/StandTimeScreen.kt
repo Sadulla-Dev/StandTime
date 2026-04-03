@@ -6,13 +6,12 @@ import android.content.res.Configuration
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -33,8 +32,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
@@ -56,10 +55,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -67,13 +66,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standtime.R
 import com.example.standtime.standtime.feature.CustomClockStudioPage
-import com.example.standtime.standtime.feature.components.accentColor
-import com.example.standtime.standtime.feature.components.remainingPomodoroText
 import com.example.standtime.standtime.feature.components.GalleryClockContent
+import com.example.standtime.standtime.feature.components.accentColor
 import com.example.standtime.standtime.feature.components.galleryParts
-import com.example.standtime.standtime.feature.components.galleryStyles
 import com.example.standtime.standtime.feature.components.galleryStyleAt
 import com.example.standtime.standtime.feature.components.galleryStyleCount
+import com.example.standtime.standtime.feature.components.galleryStyles
+import com.example.standtime.standtime.feature.components.remainingPomodoroText
 import com.example.standtime.standtime.feature.utils.AccentPalette
 import com.example.standtime.standtime.feature.utils.CalendarDayCell
 import com.example.standtime.standtime.feature.utils.StandTimeIntent
@@ -84,7 +83,6 @@ import com.example.standtime.standtime.feature.utils.localizedStringResource
 import com.example.standtime.ui.theme.CoralAccent
 import com.example.standtime.ui.theme.LimeAccent
 import com.example.standtime.ui.theme.SkyAccent
-import kotlinx.coroutines.launch
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Root
@@ -92,9 +90,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun StandTimeRoute(
-    state: StandTimeUiState,
-    onIntent: (StandTimeIntent) -> Unit,
-    modifier: Modifier = Modifier
+    state: StandTimeUiState, onIntent: (StandTimeIntent) -> Unit, modifier: Modifier = Modifier
 ) {
     val language = state.language
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -142,57 +138,47 @@ fun StandTimeRoute(
 
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         if (showCustomCreateChoice) {
-            val targetCustomStyle = state.savedCustomClockStyles
-                .getOrNull(state.selectedGalleryStyleIndex - galleryStyles.size)
-                ?: state.savedCustomClockStyles.lastOrNull()
-            AlertDialog(
-                onDismissRequest = { showCustomCreateChoice = false },
-                title = {
-                    Text(
-                        localizedStringResource(
-                            R.string.custom_create_dialog_title,
-                            language
-                        )
+            val targetCustomStyle =
+                state.savedCustomClockStyles.getOrNull(state.selectedGalleryStyleIndex - galleryStyles.size)
+                    ?: state.savedCustomClockStyles.lastOrNull()
+            AlertDialog(onDismissRequest = { showCustomCreateChoice = false }, title = {
+                Text(
+                    localizedStringResource(
+                        R.string.custom_create_dialog_title, language
                     )
-                },
-                text = {
-                    Text(
-                        localizedStringResource(
-                            R.string.custom_create_dialog_message,
-                            language
-                        )
+                )
+            }, text = {
+                Text(
+                    localizedStringResource(
+                        R.string.custom_create_dialog_message, language
                     )
-                },
-                confirmButton = {
+                )
+            }, confirmButton = {
+                TextButton(
+                    onClick = {
+                        targetCustomStyle?.let {
+                            onIntent(StandTimeIntent.EditSavedCustomClockStyle(it.id))
+                        }
+                        showCustomCreateChoice = false
+                        isCustomStudioOpen = true
+                    }) {
+                    Text(localizedStringResource(R.string.custom_edit_existing, language))
+                }
+            }, dismissButton = {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TextButton(
                         onClick = {
-                            targetCustomStyle?.let {
-                                onIntent(StandTimeIntent.EditSavedCustomClockStyle(it.id))
-                            }
+                            onIntent(StandTimeIntent.StartNewCustomClockStyle)
                             showCustomCreateChoice = false
                             isCustomStudioOpen = true
-                        }
-                    ) {
-                        Text(localizedStringResource(R.string.custom_edit_existing, language))
+                        }) {
+                        Text(localizedStringResource(R.string.custom_create_new, language))
                     }
-                },
-                dismissButton = {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        TextButton(
-                            onClick = {
-                                onIntent(StandTimeIntent.StartNewCustomClockStyle)
-                                showCustomCreateChoice = false
-                                isCustomStudioOpen = true
-                            }
-                        ) {
-                            Text(localizedStringResource(R.string.custom_create_new, language))
-                        }
-                        TextButton(onClick = { showCustomCreateChoice = false }) {
-                            Text(localizedStringResource(R.string.custom_cancel, language))
-                        }
+                    TextButton(onClick = { showCustomCreateChoice = false }) {
+                        Text(localizedStringResource(R.string.custom_cancel, language))
                     }
                 }
-            )
+            })
         }
 
         if (isCustomStudioOpen) {
@@ -205,8 +191,7 @@ fun StandTimeRoute(
                 onSave = {
                     onIntent(StandTimeIntent.SaveCustomClockStyle)
                     isCustomStudioOpen = false
-                }
-            )
+                })
         } else {
             Box(
                 modifier = Modifier
@@ -214,8 +199,7 @@ fun StandTimeRoute(
                     .background(background)
             ) {
                 HorizontalPager(
-                    state = rootPagerState,
-                    modifier = Modifier.fillMaxSize()
+                    state = rootPagerState, modifier = Modifier.fillMaxSize()
                 ) { page ->
                     when (page) {
                         0 -> ClockStylesPage(
@@ -230,8 +214,7 @@ fun StandTimeRoute(
                                     onIntent(StandTimeIntent.StartNewCustomClockStyle)
                                     isCustomStudioOpen = true
                                 }
-                            }
-                        )
+                            })
 
                         1 -> DashboardPage(
                             state = state,
@@ -284,10 +267,10 @@ private fun ClockStylesPage(
     val parts = state.galleryParts()
     var pendingDeleteStyleId by rememberSaveable { mutableStateOf<String?>(null) }
     var overlaysVisible by rememberSaveable { mutableStateOf(true) }
+    var overlayRevealTick by rememberSaveable { mutableStateOf(0) }
     val galleryPagerState = rememberPagerState(
         initialPage = state.selectedGalleryStyleIndex.coerceIn(0, lastStyleIndex),
-        pageCount = { stylesCount }
-    )
+        pageCount = { stylesCount })
     val currentIndex = galleryPagerState.currentPage.coerceIn(0, lastStyleIndex)
     val currentStyle = galleryStyleAt(currentIndex, state.savedCustomClockStyles)
     val styleName = currentStyle.label ?: localizedStringResource(
@@ -307,8 +290,12 @@ private fun ClockStylesPage(
 
     // Persist selected style to state
     LaunchedEffect(currentIndex) {
-        overlaysVisible = true
         onIntent(StandTimeIntent.ChangeGalleryStyleIndex(currentIndex))
+        overlayRevealTick++
+    }
+
+    LaunchedEffect(currentIndex, overlayRevealTick) {
+        overlaysVisible = true
         kotlinx.coroutines.delay(2000)
         overlaysVisible = false
     }
@@ -322,9 +309,7 @@ private fun ClockStylesPage(
             text = {
                 Text(
                     localizedStringResource(
-                        R.string.custom_delete_message,
-                        language,
-                        customStyleToDelete.name
+                        R.string.custom_delete_message, language, customStyleToDelete.name
                     )
                 )
             },
@@ -333,8 +318,7 @@ private fun ClockStylesPage(
                     onClick = {
                         onIntent(StandTimeIntent.DeleteSavedCustomClockStyle(customStyleToDelete.id))
                         pendingDeleteStyleId = null
-                    }
-                ) {
+                    }) {
                     Text(localizedStringResource(R.string.custom_delete_confirm, language))
                 }
             },
@@ -342,31 +326,24 @@ private fun ClockStylesPage(
                 TextButton(onClick = { pendingDeleteStyleId = null }) {
                     Text(localizedStringResource(R.string.custom_cancel, language))
                 }
-            }
-        )
+            })
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         // Full‑screen vertical pager — each page IS the clock style
         VerticalPager(
-            state = galleryPagerState,
-            modifier = Modifier.fillMaxSize()
+            state = galleryPagerState, modifier = Modifier.fillMaxSize()
         ) { page ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .combinedClickable(
-                        onClick = {},
-                        onLongClick = {
-                            state.savedCustomClockStyles
-                                .getOrNull(page - galleryStyles.size)
-                                ?.let { pendingDeleteStyleId = it.id }
-                        }
-                    )
-            ) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .combinedClickable(onClick = {
+                    overlayRevealTick++
+                }, onLongClick = {
+                    state.savedCustomClockStyles.getOrNull(page - galleryStyles.size)
+                        ?.let { pendingDeleteStyleId = it.id }
+                })) {
                 GalleryClockContent(
                     index = page,
                     parts = parts,
@@ -390,9 +367,7 @@ private fun ClockStylesPage(
         ) {
             Text(
                 text = localizedStringResource(
-                    R.string.gallery_charging_status,
-                    language,
-                    state.batteryLevel
+                    R.string.gallery_charging_status, language, state.batteryLevel
                 ),
                 modifier = Modifier
                     .galleryOverlaySurface(RoundedCornerShape(999.dp))
@@ -450,19 +425,15 @@ private fun ClockStylesPage(
             onClick = onOpenCustomStudio,
             shape = CircleShape,
             colors = ButtonDefaults.buttonColors(
-                containerColor = GalleryOverlayChipColor,
-                contentColor = GalleryOverlayContentColor
+                containerColor = GalleryOverlayChipColor, contentColor = GalleryOverlayContentColor
             ),
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(end = 20.dp, bottom = 26.dp)
                 .graphicsLayer { alpha = overlayAlpha }
-                .galleryOverlaySurface(CircleShape)
-        ) {
+                .galleryOverlaySurface(CircleShape)) {
             Text(
-                text = "+",
-                fontSize = 25.sp,
-                fontFamily = FontFamily.Monospace
+                text = "+", fontSize = 25.sp, fontFamily = FontFamily.Monospace
             )
         }
     }
@@ -479,9 +450,7 @@ private fun Modifier.galleryOverlaySurface(shape: Shape): Modifier = this
         spotColor = Color.Black.copy(alpha = 0.20f)
     )
     .border(
-        width = 1.dp,
-        color = Color.White.copy(alpha = 0.08f),
-        shape = shape
+        width = 1.dp, color = Color.White.copy(alpha = 0.08f), shape = shape
     )
     .clip(shape)
     .background(GalleryOverlayChipColor)
@@ -577,12 +546,10 @@ private fun GalleryClockPanel(
     }
 
     Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(28.dp))
+        modifier = modifier.clip(RoundedCornerShape(28.dp))
     ) {
         VerticalPager(
-            state = pagerState,
-            modifier = Modifier.fillMaxSize()
+            state = pagerState, modifier = Modifier.fillMaxSize()
         ) { page ->
             Box(
                 modifier = Modifier.fillMaxSize()
@@ -787,18 +754,15 @@ private fun SettingsCard(
                     LanguageChip(
                         selected = state.language == StandTimeLanguage.ENGLISH,
                         label = "English",
-                        onClick = { onIntent(StandTimeIntent.ChangeLanguage(StandTimeLanguage.ENGLISH)) }
-                    )
+                        onClick = { onIntent(StandTimeIntent.ChangeLanguage(StandTimeLanguage.ENGLISH)) })
                     LanguageChip(
                         selected = state.language == StandTimeLanguage.UZBEK,
                         label = "O'zbek",
-                        onClick = { onIntent(StandTimeIntent.ChangeLanguage(StandTimeLanguage.UZBEK)) }
-                    )
+                        onClick = { onIntent(StandTimeIntent.ChangeLanguage(StandTimeLanguage.UZBEK)) })
                     LanguageChip(
                         selected = state.language == StandTimeLanguage.RUSSIAN,
                         label = "Русский",
-                        onClick = { onIntent(StandTimeIntent.ChangeLanguage(StandTimeLanguage.RUSSIAN)) }
-                    )
+                        onClick = { onIntent(StandTimeIntent.ChangeLanguage(StandTimeLanguage.RUSSIAN)) })
                 }
             }
 
@@ -813,24 +777,20 @@ private fun SettingsCard(
                         label = {
                             Text(
                                 localizedStringResource(
-                                    R.string.dark_theme_label,
-                                    language
+                                    R.string.dark_theme_label, language
                                 )
                             )
-                        }
-                    )
+                        })
                     FilterChip(
                         selected = state.themeMode == ThemeMode.LIGHT,
                         onClick = { if (state.themeMode != ThemeMode.LIGHT) onIntent(StandTimeIntent.ToggleTheme) },
                         label = {
                             Text(
                                 localizedStringResource(
-                                    R.string.light_theme_label,
-                                    language
+                                    R.string.light_theme_label, language
                                 )
                             )
-                        }
-                    )
+                        })
                 }
             }
 
@@ -843,20 +803,17 @@ private fun SettingsCard(
                         label = localizedStringResource(R.string.accent_lime_label, language),
                         color = LimeAccent,
                         selected = state.accentPalette == AccentPalette.LIME,
-                        onClick = { onIntent(StandTimeIntent.ChangeAccent(AccentPalette.LIME)) }
-                    )
+                        onClick = { onIntent(StandTimeIntent.ChangeAccent(AccentPalette.LIME)) })
                     AccentChip(
                         label = localizedStringResource(R.string.accent_sky_label, language),
                         color = SkyAccent,
                         selected = state.accentPalette == AccentPalette.SKY,
-                        onClick = { onIntent(StandTimeIntent.ChangeAccent(AccentPalette.SKY)) }
-                    )
+                        onClick = { onIntent(StandTimeIntent.ChangeAccent(AccentPalette.SKY)) })
                     AccentChip(
                         label = localizedStringResource(R.string.accent_coral_label, language),
                         color = CoralAccent,
                         selected = state.accentPalette == AccentPalette.CORAL,
-                        onClick = { onIntent(StandTimeIntent.ChangeAccent(AccentPalette.CORAL)) }
-                    )
+                        onClick = { onIntent(StandTimeIntent.ChangeAccent(AccentPalette.CORAL)) })
                 }
             }
 
@@ -868,36 +825,30 @@ private fun SettingsCard(
                     SettingRow(
                         label = localizedStringResource(R.string.show_calendar_label, language),
                         checked = state.showCalendar,
-                        onCheckedChange = { onIntent(StandTimeIntent.ToggleCalendar) }
-                    )
+                        onCheckedChange = { onIntent(StandTimeIntent.ToggleCalendar) })
                     SettingRow(
                         label = localizedStringResource(R.string.show_weather_label, language),
                         checked = state.showWeather,
-                        onCheckedChange = { onIntent(StandTimeIntent.ToggleWeather) }
-                    )
+                        onCheckedChange = { onIntent(StandTimeIntent.ToggleWeather) })
                     SettingRow(
                         label = localizedStringResource(R.string.show_battery_label, language),
                         checked = state.showBattery,
-                        onCheckedChange = { onIntent(StandTimeIntent.ToggleBattery) }
-                    )
+                        onCheckedChange = { onIntent(StandTimeIntent.ToggleBattery) })
                     SettingRow(
                         label = localizedStringResource(R.string.show_pomodoro_label, language),
                         checked = state.showPomodoro,
-                        onCheckedChange = { onIntent(StandTimeIntent.TogglePomodoro) }
-                    )
+                        onCheckedChange = { onIntent(StandTimeIntent.TogglePomodoro) })
                     SettingRow(
                         label = localizedStringResource(R.string.show_seconds_label, language),
                         checked = state.showSeconds,
-                        onCheckedChange = { onIntent(StandTimeIntent.ToggleSeconds) }
-                    )
+                        onCheckedChange = { onIntent(StandTimeIntent.ToggleSeconds) })
                 }
             }
 
             // ── Location / weather refresh ────────────────────────────────
             if (!state.locationPermissionGranted) {
                 Button(
-                    onClick = onRequestLocationPermission,
-                    modifier = Modifier.fillMaxWidth()
+                    onClick = onRequestLocationPermission, modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(localizedStringResource(R.string.weather_enable_location, language))
                 }
@@ -905,8 +856,7 @@ private fun SettingsCard(
                 FilterChip(
                     selected = false,
                     onClick = { onIntent(StandTimeIntent.RefreshWeather) },
-                    label = { Text(localizedStringResource(R.string.weather_refresh, language)) }
-                )
+                    label = { Text(localizedStringResource(R.string.weather_refresh, language)) })
             }
         }
     }
@@ -963,21 +913,17 @@ private fun WeatherCard(
                         label = {
                             Text(
                                 localizedStringResource(
-                                    R.string.weather_refresh,
-                                    language
+                                    R.string.weather_refresh, language
                                 )
                             )
-                        }
-                    )
+                        })
                 }
 
                 else -> {
                     Text(
                         text = state.locationName.ifBlank {
                             localizedStringResource(R.string.weather_location_unknown, language)
-                        },
-                        style = MaterialTheme.typography.titleLarge,
-                        color = accentColor
+                        }, style = MaterialTheme.typography.titleLarge, color = accentColor
                     )
                     Text(
                         text = state.weatherTemperature.ifBlank { "--" },
@@ -994,9 +940,7 @@ private fun WeatherCard(
                     if (state.weatherWind.isNotBlank()) {
                         Text(
                             text = localizedStringResource(
-                                R.string.weather_wind_value,
-                                language,
-                                state.weatherWind
+                                R.string.weather_wind_value, language, state.weatherWind
                             ),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -1008,12 +952,10 @@ private fun WeatherCard(
                         label = {
                             Text(
                                 localizedStringResource(
-                                    R.string.weather_refresh,
-                                    language
+                                    R.string.weather_refresh, language
                                 )
                             )
-                        }
-                    )
+                        })
                 }
             }
         }
@@ -1022,9 +964,7 @@ private fun WeatherCard(
 
 @Composable
 private fun CalendarCard(
-    state: StandTimeUiState,
-    language: StandTimeLanguage,
-    accentColor: Color
+    state: StandTimeUiState, language: StandTimeLanguage, accentColor: Color
 ) {
     PanelCard(accentColor = accentColor, modifier = Modifier.fillMaxSize()) {
         Column(
@@ -1052,9 +992,7 @@ private fun CalendarCard(
 
 @Composable
 private fun CalendarGrid(
-    weekDayLabels: List<String>,
-    cells: List<CalendarDayCell>,
-    accentColor: Color
+    weekDayLabels: List<String>, cells: List<CalendarDayCell>, accentColor: Color
 ) {
     BoxWithConstraints {
         val compact = maxWidth < 340.dp
@@ -1090,8 +1028,7 @@ private fun CalendarGrid(
 
 @Composable
 private fun CalendarRow(
-    itemSpacing: androidx.compose.ui.unit.Dp = 6.dp,
-    content: @Composable RowScope.() -> Unit
+    itemSpacing: androidx.compose.ui.unit.Dp = 6.dp, content: @Composable RowScope.() -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -1102,18 +1039,14 @@ private fun CalendarRow(
 
 @Composable
 private fun RowScope.CalendarTextCell(
-    text: String,
-    color: Color,
-    backgroundColor: Color = Color.Transparent,
-    compact: Boolean = false
+    text: String, color: Color, backgroundColor: Color = Color.Transparent, compact: Boolean = false
 ) {
     Box(
         modifier = Modifier
             .weight(1f)
             .clip(RoundedCornerShape(12.dp))
             .background(backgroundColor)
-            .padding(vertical = if (compact) 5.dp else 8.dp),
-        contentAlignment = Alignment.Center
+            .padding(vertical = if (compact) 5.dp else 8.dp), contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
@@ -1144,10 +1077,11 @@ private fun PomodoroCard(
                 color = accentColor
             )
             Text(
-                text = if (state.isPomodoroRunning)
-                    localizedStringResource(R.string.pomodoro_running, language)
-                else
-                    localizedStringResource(R.string.pomodoro_paused, language),
+                text = if (state.isPomodoroRunning) localizedStringResource(
+                    R.string.pomodoro_running,
+                    language
+                )
+                else localizedStringResource(R.string.pomodoro_paused, language),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -1159,13 +1093,10 @@ private fun PomodoroCard(
                         label = {
                             Text(
                                 localizedStringResource(
-                                    R.string.pomodoro_preset_label,
-                                    language,
-                                    preset.label
+                                    R.string.pomodoro_preset_label, language, preset.label
                                 )
                             )
-                        }
-                    )
+                        })
                 }
             }
             ChipRow {
@@ -1174,18 +1105,17 @@ private fun PomodoroCard(
                     onClick = { onIntent(StandTimeIntent.TogglePomodoroTimer) },
                     label = {
                         Text(
-                            if (state.isPomodoroRunning)
-                                localizedStringResource(R.string.pomodoro_pause, language)
-                            else
-                                localizedStringResource(R.string.pomodoro_start, language)
+                            if (state.isPomodoroRunning) localizedStringResource(
+                                R.string.pomodoro_pause,
+                                language
+                            )
+                            else localizedStringResource(R.string.pomodoro_start, language)
                         )
-                    }
-                )
+                    })
                 FilterChip(
                     selected = false,
                     onClick = { onIntent(StandTimeIntent.ResetPomodoro) },
-                    label = { Text(localizedStringResource(R.string.pomodoro_reset, language)) }
-                )
+                    label = { Text(localizedStringResource(R.string.pomodoro_reset, language)) })
             }
         }
     }
@@ -1215,11 +1145,9 @@ private fun MediaCard(
                 Button(
                     onClick = {
                         context.startActivity(
-                            Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
-                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         )
-                    }
-                ) {
+                    }) {
                     Text(localizedStringResource(R.string.media_enable_access, language))
                 }
             } else if (!state.mediaSessionAvailable) {
@@ -1232,16 +1160,12 @@ private fun MediaCard(
                 Text(
                     text = state.mediaTitle.ifBlank {
                         localizedStringResource(R.string.media_title, language)
-                    },
-                    style = MaterialTheme.typography.titleLarge,
-                    color = accentColor
+                    }, style = MaterialTheme.typography.titleLarge, color = accentColor
                 )
                 Text(
                     text = state.mediaSubtitle.ifBlank {
                         localizedStringResource(
-                            R.string.media_source_value,
-                            language,
-                            state.mediaAppName
+                            R.string.media_source_value, language, state.mediaAppName
                         )
                     },
                     style = MaterialTheme.typography.bodyLarge,
@@ -1260,18 +1184,17 @@ private fun MediaCard(
                         onClick = { onIntent(StandTimeIntent.ToggleMediaPlayback) },
                         label = {
                             Text(
-                                if (state.isMediaPlaying)
-                                    localizedStringResource(R.string.media_pause, language)
-                                else
-                                    localizedStringResource(R.string.media_play, language)
+                                if (state.isMediaPlaying) localizedStringResource(
+                                    R.string.media_pause,
+                                    language
+                                )
+                                else localizedStringResource(R.string.media_play, language)
                             )
-                        }
-                    )
+                        })
                     FilterChip(
                         selected = false,
                         onClick = { onIntent(StandTimeIntent.SkipToNextTrack) },
-                        label = { Text(localizedStringResource(R.string.media_next, language)) }
-                    )
+                        label = { Text(localizedStringResource(R.string.media_next, language)) })
                 }
             }
         }
@@ -1323,9 +1246,7 @@ private fun PageIndicatorBar(
  */
 @Composable
 private fun PanelCard(
-    accentColor: Color,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    accentColor: Color, modifier: Modifier = Modifier, content: @Composable () -> Unit
 ) {
     Surface(
         modifier = modifier,
@@ -1354,8 +1275,7 @@ private fun PanelCard(
 
 @Composable
 private fun SettingSection(
-    title: String,
-    content: @Composable () -> Unit
+    title: String, content: @Composable () -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
@@ -1371,9 +1291,7 @@ private fun SettingSection(
 
 @Composable
 private fun SettingRow(
-    label: String,
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    label: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -1391,15 +1309,10 @@ private fun SettingRow(
 
 @Composable
 private fun AccentChip(
-    label: String,
-    color: Color,
-    selected: Boolean,
-    onClick: () -> Unit
+    label: String, color: Color, selected: Boolean, onClick: () -> Unit
 ) {
     FilterChip(
-        selected = selected,
-        onClick = onClick,
-        label = {
+        selected = selected, onClick = onClick, label = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(7.dp)
@@ -1412,21 +1325,15 @@ private fun AccentChip(
                 )
                 Text(label)
             }
-        }
-    )
+        })
 }
 
 @Composable
 private fun ColorOptionChip(
-    label: String,
-    color: Color,
-    selected: Boolean,
-    onClick: () -> Unit
+    label: String, color: Color, selected: Boolean, onClick: () -> Unit
 ) {
     FilterChip(
-        selected = selected,
-        onClick = onClick,
-        label = {
+        selected = selected, onClick = onClick, label = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(7.dp)
@@ -1439,8 +1346,7 @@ private fun ColorOptionChip(
                 )
                 Text(label)
             }
-        }
-    )
+        })
 }
 
 @Composable
@@ -1462,8 +1368,5 @@ private fun ChipRow(content: @Composable RowScope.() -> Unit) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 private enum class DashboardPanel {
-    Calendar,
-    Weather,
-    Pomodoro,
-    Media
+    Calendar, Weather, Pomodoro, Media
 }

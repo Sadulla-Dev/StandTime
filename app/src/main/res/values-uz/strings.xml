@@ -145,6 +145,8 @@
     <string name="gallery_style_glitch">Cyber Glitch</string>
     <string name="gallery_style_abstract">Abstract Geometric</string>
     <string name="gallery_style_typography">Typography Focus</string>
+    <string name="gallery_style_horizon">Horizon Studio</string>
+    <string name="gallery_style_contrast">Contrast Split</string>
     <string name="gallery_style_nothing_dot">Nothing Dot</string>
     <string name="gallery_style_custom">Custom Studio</string>
     <string name="custom_create_button">Create</string>
