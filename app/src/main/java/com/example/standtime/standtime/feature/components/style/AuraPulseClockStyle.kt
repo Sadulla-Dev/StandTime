@@ -1,5 +1,6 @@
 package com.example.standtime.standtime.feature.components.style
 
+import androidx.compose.ui.tooling.preview.Preview
 import android.graphics.BlurMaskFilter
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
@@ -109,4 +110,10 @@ fun AuraPulseClockStyle(
             )
         }
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF101418, widthDp = 800, heightDp = 360)
+@Composable
+private fun AuraPulseClockStylePreview() = ClockStylePreviewFrame { modifier ->
+    AuraPulseClockStyle(ClockStylePreviewParts, StandTimeLanguage.ENGLISH, ClockStylePreviewAccent, modifier)
 }

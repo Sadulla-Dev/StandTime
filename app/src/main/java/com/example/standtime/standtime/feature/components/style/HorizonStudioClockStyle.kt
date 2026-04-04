@@ -1,5 +1,6 @@
 package com.example.standtime.standtime.feature.components.style
 
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -86,4 +87,10 @@ fun HorizonStudioClockStyle(
             )
         }
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF101418, widthDp = 800, heightDp = 360)
+@Composable
+private fun HorizonStudioClockStylePreview() = ClockStylePreviewFrame { modifier ->
+    HorizonStudioClockStyle(ClockStylePreviewParts, StandTimeLanguage.ENGLISH, ClockStylePreviewAccent, modifier)
 }

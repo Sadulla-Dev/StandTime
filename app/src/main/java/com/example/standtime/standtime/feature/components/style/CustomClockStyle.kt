@@ -1,5 +1,6 @@
 package com.example.standtime.standtime.feature.components.style
 
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,9 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.standtime.standtime.feature.components.GalleryClockParts
@@ -36,6 +39,22 @@ fun CustomClockStyle(
 ) {
     val scale = LocalGalleryScaleFactor.current
     val textColor = Color(custom.textColor.argb)
+    val isVertical = custom.layout == CustomClockLayout.VERTICAL
+    val mainSize = if (isVertical) {
+        (76f * scale).coerceIn(34f, 86f)
+    } else {
+        (118f * scale).coerceIn(54f, 136f)
+    }
+    val compactMetaSize = if (isVertical) {
+        (22f * scale).coerceIn(12f, 30f)
+    } else {
+        (84f * scale).coerceIn(40f, 92f)
+    }
+    val regularMetaSize = if (isVertical) {
+        (14f * scale).coerceIn(10f, 18f)
+    } else {
+        (22f * scale).coerceIn(12f, 28f)
+    }
     val backgroundColors = buildList {
         add(Color(custom.backgroundStartColor.argb))
         if (custom.showBackgroundCenterColor) {
@@ -75,29 +94,44 @@ fun CustomClockStyle(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            if (custom.layout == CustomClockLayout.VERTICAL) {
-                TextBlock(parts.hours, textColor, custom, scale)
-                TextBlock(parts.minutes, textColor.copy(alpha = 0.95f), custom, scale)
+            if (isVertical) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy((2f * scale).coerceIn(1f, 4f).dp)
+                ) {
+                    TextBlock(parts.hours, textColor, custom, mainSize)
+                    TextBlock(
+                        value = parts.minutes,
+                        color = textColor.copy(alpha = 0.95f),
+                        custom = custom,
+                        size = mainSize
+                    )
+                }
                 if (custom.showSeconds) {
-                    MetaLine(parts.seconds, textColor.copy(alpha = 0.8f), custom, scale, compact = true)
+                    MetaLine(
+                        parts.seconds,
+                        textColor.copy(alpha = 0.8f),
+                        custom,
+                        compactMetaSize
+                    )
                 }
             } else {
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    TextBlock(parts.hours, textColor, custom, scale)
-                    MetaLine(":", textColor.copy(alpha = 0.9f), custom, scale, compact = true)
-                    TextBlock(parts.minutes, textColor.copy(alpha = 0.95f), custom, scale)
+                    TextBlock(parts.hours, textColor, custom, mainSize)
+                    MetaLine(":", textColor.copy(alpha = 0.9f), custom, compactMetaSize)
+                    TextBlock(parts.minutes, textColor.copy(alpha = 0.95f), custom, mainSize)
                     if (custom.showSeconds) {
                         Spacer(modifier = Modifier.width(10.dp))
-                        MetaLine(parts.seconds, textColor.copy(alpha = 0.8f), custom, scale, compact = true)
+                        MetaLine(parts.seconds, textColor.copy(alpha = 0.8f), custom, compactMetaSize)
                     }
                 }
             }
 
             if (custom.showDate) {
-                MetaLine(parts.dateText, textColor.copy(alpha = 0.7f), custom, scale)
+                MetaLine(parts.dateText, textColor.copy(alpha = 0.7f), custom, regularMetaSize)
             }
             if (custom.showWeather) {
                 MetaLine(
@@ -107,7 +141,7 @@ fun CustomClockStyle(
                         .ifBlank { "Weather" },
                     textColor.copy(alpha = 0.6f),
                     custom,
-                    scale
+                    regularMetaSize
                 )
             }
         }
@@ -119,12 +153,15 @@ private fun TextBlock(
     value: String,
     color: Color,
     custom: CustomClockStyleSettings,
-    scale: Float
+    size: Float,
+    modifier: Modifier = Modifier
 ) {
     androidx.compose.material3.Text(
         text = value,
+        modifier = modifier,
         color = color,
-        style = custom.font.toTextStyle((118f * scale).coerceIn(54f, 136f))
+        textAlign = TextAlign.Center,
+        style = custom.font.toTextStyle(size)
     )
 }
 
@@ -133,29 +170,45 @@ private fun MetaLine(
     value: String,
     color: Color,
     custom: CustomClockStyleSettings,
-    scale: Float,
-    compact: Boolean = false
+    size: Float,
+    modifier: Modifier = Modifier
 ) {
     androidx.compose.material3.Text(
         text = value,
+        modifier = modifier,
         color = color,
-        style = custom.font.toTextStyle(
-            if (compact) (84f * scale).coerceIn(40f, 92f) else (22f * scale).coerceIn(12f, 28f)
-        )
+        textAlign = TextAlign.Center,
+        style = custom.font.toTextStyle(size)
     )
 }
 
-private fun CustomClockFont.toTextStyle(size: Float): TextStyle = when (this) {
-    CustomClockFont.MONO -> TextStyle(fontFamily = StandTimeFontFamilies.Inter, fontWeight = FontWeight.Bold, fontSize = size.sp)
-    CustomClockFont.MONO_WIDE -> TextStyle(fontFamily = StandTimeFontFamilies.Oswald, fontWeight = FontWeight.Bold, letterSpacing = 3.sp, fontSize = size.sp)
-    CustomClockFont.SERIF_CLASSIC -> TextStyle(fontFamily = StandTimeFontFamilies.PlayfairDisplay, fontWeight = FontWeight.Bold, fontSize = size.sp)
-    CustomClockFont.SERIF_SOFT -> TextStyle(fontFamily = StandTimeFontFamilies.PlayfairDisplay, fontWeight = FontWeight.Medium, fontStyle = FontStyle.Italic, fontSize = size.sp)
-    CustomClockFont.SANS_CLEAN -> TextStyle(fontFamily = StandTimeFontFamilies.Inter, fontWeight = FontWeight.Medium, fontSize = size.sp)
-    CustomClockFont.SANS_BOLD -> TextStyle(fontFamily = StandTimeFontFamilies.Poppins, fontWeight = FontWeight.Bold, fontSize = size.sp)
-    CustomClockFont.CONDENSED -> TextStyle(fontFamily = StandTimeFontFamilies.Oswald, fontWeight = FontWeight.Bold, letterSpacing = (-1).sp, fontSize = size.sp)
-    CustomClockFont.CURSIVE -> TextStyle(fontFamily = StandTimeFontFamilies.Caveat, fontWeight = FontWeight.Bold, fontSize = size.sp)
-    CustomClockFont.TECH -> TextStyle(fontFamily = StandTimeFontFamilies.PressStart2P, fontWeight = FontWeight.Normal, fontSize = (size * 0.58f).sp, letterSpacing = 1.sp)
-    CustomClockFont.POSTER -> TextStyle(fontFamily = StandTimeFontFamilies.Oswald, fontWeight = FontWeight.Black, letterSpacing = 1.sp, fontSize = size.sp)
-    CustomClockFont.ELEGANT -> TextStyle(fontFamily = StandTimeFontFamilies.PlayfairDisplay, fontWeight = FontWeight.Light, fontStyle = FontStyle.Italic, fontSize = size.sp)
-    CustomClockFont.MINIMAL -> TextStyle(fontFamily = StandTimeFontFamilies.Nunito, fontWeight = FontWeight.Light, fontSize = size.sp)
+private fun CustomClockFont.toTextStyle(size: Float): TextStyle {
+    val base = TextStyle(
+        lineHeight = (size * 0.88f).sp,
+        platformStyle = PlatformTextStyle(includeFontPadding = false)
+    )
+    return when (this) {
+        CustomClockFont.MONO -> base.copy(fontFamily = StandTimeFontFamilies.Inter, fontWeight = FontWeight.Bold, fontSize = size.sp)
+        CustomClockFont.MONO_WIDE -> base.copy(fontFamily = StandTimeFontFamilies.Oswald, fontWeight = FontWeight.Bold, letterSpacing = 3.sp, fontSize = size.sp)
+        CustomClockFont.SERIF_CLASSIC -> base.copy(fontFamily = StandTimeFontFamilies.PlayfairDisplay, fontWeight = FontWeight.Bold, fontSize = size.sp)
+        CustomClockFont.SERIF_SOFT -> base.copy(fontFamily = StandTimeFontFamilies.PlayfairDisplay, fontWeight = FontWeight.Medium, fontStyle = FontStyle.Italic, fontSize = size.sp)
+        CustomClockFont.SANS_CLEAN -> base.copy(fontFamily = StandTimeFontFamilies.Inter, fontWeight = FontWeight.Medium, fontSize = size.sp)
+        CustomClockFont.SANS_BOLD -> base.copy(fontFamily = StandTimeFontFamilies.Poppins, fontWeight = FontWeight.Bold, fontSize = size.sp)
+        CustomClockFont.CONDENSED -> base.copy(fontFamily = StandTimeFontFamilies.Oswald, fontWeight = FontWeight.Bold, letterSpacing = (-1).sp, fontSize = size.sp)
+        CustomClockFont.CURSIVE -> base.copy(fontFamily = StandTimeFontFamilies.Caveat, fontWeight = FontWeight.Bold, fontSize = size.sp)
+        CustomClockFont.TECH -> base.copy(fontFamily = StandTimeFontFamilies.PressStart2P, fontWeight = FontWeight.Normal, fontSize = (size * 0.58f).sp, letterSpacing = 1.sp)
+        CustomClockFont.POSTER -> base.copy(fontFamily = StandTimeFontFamilies.Oswald, fontWeight = FontWeight.Black, letterSpacing = 1.sp, fontSize = size.sp)
+        CustomClockFont.ELEGANT -> base.copy(fontFamily = StandTimeFontFamilies.PlayfairDisplay, fontWeight = FontWeight.Light, fontStyle = FontStyle.Italic, fontSize = size.sp)
+        CustomClockFont.MINIMAL -> base.copy(fontFamily = StandTimeFontFamilies.Nunito, fontWeight = FontWeight.Light, fontSize = size.sp)
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF101418, widthDp = 800, heightDp = 360)
+@Composable
+private fun CustomClockStylePreview() = ClockStylePreviewFrame { modifier ->
+    CustomClockStyle(
+        parts = ClockStylePreviewParts,
+        custom = ClockStylePreviewCustomStyle,
+        modifier = modifier
+    )
 }

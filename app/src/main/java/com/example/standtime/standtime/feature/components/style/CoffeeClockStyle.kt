@@ -1,5 +1,6 @@
 package com.example.standtime.standtime.feature.components.style
 
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -25,7 +26,13 @@ fun CoffeeClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, acce
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("\u2615", fontSize = 84.sp, color = Color(0xFFE6CCB2).copy(alpha = 0.5f))
-        Text("${parts.hours}:${parts.minutes}", modifier = Modifier.padding(top = 14.dp), color = Color(0xFFE6CCB2), fontSize = 110.sp, fontWeight = FontWeight.Bold)
+        Text("${parts.hours}:${parts.minutes}", modifier = Modifier.padding(top = 10.dp), color = Color(0xFFE6CCB2), fontSize = 170.sp, fontWeight = FontWeight.Bold)
         Text(localizedStringResource(R.string.gallery_coffee_brewing, language), modifier = Modifier.padding(top = 12.dp), color = Color(0xFFE6CCB2).copy(alpha = 0.45f), fontSize = 24.sp, letterSpacing = 4.sp)
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF101418, widthDp = 800, heightDp = 360)
+@Composable
+private fun CoffeeClockStylePreview() = ClockStylePreviewFrame { modifier ->
+    CoffeeClockStyle(ClockStylePreviewParts, StandTimeLanguage.ENGLISH, ClockStylePreviewAccent, modifier)
 }

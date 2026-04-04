@@ -1,5 +1,6 @@
 package com.example.standtime.standtime.feature.components.style
 
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -54,4 +55,10 @@ fun NasaClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, accent
             Text("1.0 ATM", color = Color(0xFFFF8A3D), fontSize = 30.sp, fontFamily = FontFamily.Monospace)
         }
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF101418, widthDp = 800, heightDp = 360)
+@Composable
+private fun NasaClockStylePreview() = ClockStylePreviewFrame { modifier ->
+    NasaClockStyle(ClockStylePreviewParts, StandTimeLanguage.ENGLISH, ClockStylePreviewAccent, modifier)
 }

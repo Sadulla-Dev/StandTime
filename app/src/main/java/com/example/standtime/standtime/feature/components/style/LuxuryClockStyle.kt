@@ -1,5 +1,6 @@
 package com.example.standtime.standtime.feature.components.style
 
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -37,4 +38,10 @@ fun LuxuryClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, acce
             fontWeight = FontWeight.Light
         )
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF101418, widthDp = 800, heightDp = 360)
+@Composable
+private fun LuxuryClockStylePreview() = ClockStylePreviewFrame { modifier ->
+    LuxuryClockStyle(ClockStylePreviewParts, StandTimeLanguage.ENGLISH, ClockStylePreviewAccent, modifier)
 }

@@ -15,6 +15,10 @@ object StandTimeFontFamilies {
         Font(R.font.inter_variable, FontWeight.Black)
     )
 
+    val NothingFont = FontFamily(
+        Font(R.font.nothing, FontWeight.Normal),
+        Font(R.font.nothing, FontWeight.Bold)
+    )
     val Poppins = FontFamily(
         Font(R.font.poppins_regular, FontWeight.Normal),
         Font(R.font.poppins_medium, FontWeight.Medium),

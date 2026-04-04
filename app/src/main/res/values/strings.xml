@@ -81,7 +81,7 @@
     <string name="gallery_ios_finance_label">USD/UZS</string>
     <string name="gallery_ios_finance_value">12,650.00</string>
     <string name="gallery_terminal_init">&gt; INITIALIZING SYSTEM_CLOCK…</string>
-    <string name="gallery_terminal_status">// STATUS: STABLE | UPTIME: 100%%</string>
+    <string name="gallery_terminal_status">// STATUS: STABLE | UPTIME: %1$s%%</string>
     <string name="gallery_pixel_pet_health">HEALTH: 100%%</string>
     <string name="gallery_lofi_station">music  lo-fi station</string>
     <string name="gallery_luxury_est">EST. 2024</string>
@@ -145,8 +145,10 @@
     <string name="gallery_style_glitch">Cyber Glitch</string>
     <string name="gallery_style_abstract">Abstract Geometric</string>
     <string name="gallery_style_typography">Typography Focus</string>
+    <string name="gallery_style_arabic">Arabic Majlis</string>
     <string name="gallery_style_horizon">Horizon Studio</string>
     <string name="gallery_style_contrast">Contrast Split</string>
+    <string name="gallery_arabic_label">الوقت</string>
     <string name="gallery_style_nothing_dot">Nothing Dot</string>
     <string name="gallery_style_custom">Custom Studio</string>
     <string name="custom_create_button">Create</string>

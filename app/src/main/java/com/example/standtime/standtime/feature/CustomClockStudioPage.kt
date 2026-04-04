@@ -1068,6 +1068,7 @@ private fun PhonePreviewCanvas(
     var previewScale by remember(custom.scale) { mutableFloatStateOf(custom.scale) }
     var previewOffsetX by remember(custom.offsetX) { mutableFloatStateOf(custom.offsetX) }
     var previewOffsetY by remember(custom.offsetY) { mutableFloatStateOf(custom.offsetY) }
+    val previewLayoutScale = if (custom.layout == CustomClockLayout.VERTICAL) 0.8f else 1f
 
     LaunchedEffect(previewScale, previewOffsetX, previewOffsetY) {
         delay(90)
@@ -1090,7 +1091,6 @@ private fun PhonePreviewCanvas(
         Box(
             modifier = Modifier
                 .width(previewWidth)
-                .aspectRatio(19.5f / 9f)
                 .clip(RoundedCornerShape(34.dp))
                 .pointerInput(custom.scale, custom.offsetX, custom.offsetY) {
                     detectTransformGestures { _, pan, zoom, _ ->
@@ -1141,7 +1141,7 @@ private fun PhonePreviewCanvas(
                     CustomClockStyle(
                         parts = parts,
                         custom = custom.copy(
-                            scale = previewScale,
+                            scale = previewScale * previewLayoutScale,
                             offsetX = previewOffsetX,
                             offsetY = previewOffsetY
                         ),
@@ -1159,5 +1159,13 @@ private fun preferredPreviewWidth(maxWidth: Dp): Dp {
         maxWidth > 420.dp -> 360.dp
         maxWidth > 360.dp -> 320.dp
         else -> maxWidth * 0.9f
+    }
+}
+
+private fun preferredPreviewHeight(maxHeight: Dp): Dp {
+    return when {
+        maxHeight > 260.dp -> 170.dp
+        maxHeight > 220.dp -> 150.dp
+        else -> maxHeight * 0.72f
     }
 }

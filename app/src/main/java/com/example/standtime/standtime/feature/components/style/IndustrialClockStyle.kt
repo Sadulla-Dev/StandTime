@@ -1,5 +1,6 @@
 package com.example.standtime.standtime.feature.components.style
 
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,4 +40,10 @@ fun IndustrialClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, 
             Text(parts.minutes, color = Color(0xFFF4F4F5), fontSize = 136.sp, fontFamily = FontFamily.Monospace)
         }
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF101418, widthDp = 800, heightDp = 360)
+@Composable
+private fun IndustrialClockStylePreview() = ClockStylePreviewFrame { modifier ->
+    IndustrialClockStyle(ClockStylePreviewParts, StandTimeLanguage.ENGLISH, ClockStylePreviewAccent, modifier)
 }

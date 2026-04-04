@@ -1,5 +1,6 @@
 package com.example.standtime.standtime.feature.components.style
 
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.offset
@@ -23,7 +24,13 @@ fun PixelStackClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, 
         verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = parts.hours, style = TextStyle(fontWeight = FontWeight.Black, fontSize = 132.sp), color = Color(0xFFBFDBFE))
-        Text(text = parts.minutes, modifier = Modifier.offset(y = (-28).dp), style = TextStyle(fontWeight = FontWeight.Black, fontSize = 132.sp), color = Color.White)
+        Text(text = parts.hours, style = TextStyle(fontWeight = FontWeight.Black, fontSize = 182.sp), color = Color(0xFFBFDBFE))
+        Text(text = parts.minutes, modifier = Modifier.offset(y = (-28).dp), style = TextStyle(fontWeight = FontWeight.Black, fontSize = 182.sp), color = Color.White)
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF101418, widthDp = 800, heightDp = 360)
+@Composable
+private fun PixelStackClockStylePreview() = ClockStylePreviewFrame { modifier ->
+    PixelStackClockStyle(ClockStylePreviewParts, StandTimeLanguage.ENGLISH, ClockStylePreviewAccent, modifier)
 }

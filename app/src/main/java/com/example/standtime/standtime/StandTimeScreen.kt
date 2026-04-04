@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -235,16 +236,6 @@ fun StandTimeRoute(
                     }
                 }
 
-                if (rootPagerState.currentPage != 0) {
-                    PageIndicatorBar(
-                        currentPage = rootPagerState.currentPage,
-                        language = language,
-                        accentColor = accentColor,
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .padding(top = 6.dp)
-                    )
-                }
             }
         }
     }
@@ -607,41 +598,22 @@ private fun InfoPanelStack(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        // Swipe hint + dot indicator
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Text(
-                text = localizedStringResource(R.string.swipe_vertical_hint, language),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            repeat(pages.size) { i ->
-                Box(
-                    modifier = Modifier
-                        .size(if (i == pagerState.currentPage) 7.dp else 5.dp)
-                        .clip(CircleShape)
-                        .background(
-                            if (i == pagerState.currentPage) accentColor
-                            else MaterialTheme.colorScheme.surfaceVariant
-                        )
-                )
-            }
-        }
-
         VerticalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(vertical = 6.dp),
+            pageSpacing = 14.dp
         ) { page ->
-            when (pages[page]) {
-                DashboardPanel.Calendar -> CalendarCard(state, language, accentColor)
-                DashboardPanel.Weather -> WeatherCard(
-                    state, language, accentColor, onIntent, onRequestLocationPermission
-                )
+            Box(modifier = Modifier.fillMaxSize()) {
+                when (pages[page]) {
+                    DashboardPanel.Calendar -> CalendarCard(state, language, accentColor)
+                    DashboardPanel.Weather -> WeatherCard(
+                        state, language, accentColor, onIntent, onRequestLocationPermission
+                    )
 
-                DashboardPanel.Pomodoro -> PomodoroCard(state, language, accentColor, onIntent)
-                DashboardPanel.Media -> MediaCard(state, language, accentColor, onIntent)
+                    DashboardPanel.Pomodoro -> PomodoroCard(state, language, accentColor, onIntent)
+                    DashboardPanel.Media -> MediaCard(state, language, accentColor, onIntent)
+                }
             }
         }
     }
@@ -707,24 +679,6 @@ private fun SetupPage(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Header
-        PanelCard(accentColor = accentColor, modifier = Modifier.fillMaxWidth()) {
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(
-                    text = localizedStringResource(R.string.setup_label, language),
-                    style = MaterialTheme.typography.displaySmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    text = localizedStringResource(R.string.swipe_styles_hint, language),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-
-        // All settings in one card
         SettingsCard(
             state = state,
             language = language,

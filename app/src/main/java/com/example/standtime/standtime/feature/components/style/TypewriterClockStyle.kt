@@ -1,5 +1,6 @@
 package com.example.standtime.standtime.feature.components.style
 
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -26,6 +27,12 @@ fun TypewriterClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, 
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(localizedStringResource(R.string.gallery_current_moment, language), color = Color(0xFF78716C).copy(alpha = 0.5f), fontSize = 28.sp, fontStyle = FontStyle.Italic)
-        Text(text = "${parts.hours}:${parts.minutes}", modifier = Modifier.padding(top = 16.dp), color = Color(0xFF44403C), fontSize = 118.sp, fontStyle = FontStyle.Italic, fontWeight = FontWeight.Bold)
+        Text(text = "${parts.hours}:${parts.minutes}", modifier = Modifier.padding(top = 10.dp), color = Color(0xFF44403C), fontSize = 218.sp, fontStyle = FontStyle.Italic, fontWeight = FontWeight.Bold)
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF101418, widthDp = 800, heightDp = 360)
+@Composable
+private fun TypewriterClockStylePreview() = ClockStylePreviewFrame { modifier ->
+    TypewriterClockStyle(ClockStylePreviewParts, StandTimeLanguage.ENGLISH, ClockStylePreviewAccent, modifier)
 }

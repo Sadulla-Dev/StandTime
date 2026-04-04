@@ -1,5 +1,6 @@
 package com.example.standtime.standtime.feature.components.style
 
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -25,4 +26,10 @@ fun GlassClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, accen
         GlassTimeBlock(parts.hours)
         GlassTimeBlock(parts.minutes)
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF101418, widthDp = 800, heightDp = 360)
+@Composable
+private fun GlassClockStylePreview() = ClockStylePreviewFrame { modifier ->
+    GlassClockStyle(ClockStylePreviewParts, StandTimeLanguage.ENGLISH, ClockStylePreviewAccent, modifier)
 }

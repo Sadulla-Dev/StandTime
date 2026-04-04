@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Color
 import com.example.standtime.standtime.feature.components.style.AbstractGeometricClockStyle
 import com.example.standtime.standtime.feature.components.style.AdminPanelClockStyle
 import com.example.standtime.standtime.feature.components.style.AnalogZenClockStyle
+import com.example.standtime.standtime.feature.components.style.ArabicMajlisClockStyle
 import com.example.standtime.standtime.feature.components.style.ArchitectStudioClockStyle
 import com.example.standtime.standtime.feature.components.style.AuraPulseClockStyle
 import com.example.standtime.standtime.feature.components.style.BauhausClockStyle
@@ -50,46 +51,47 @@ import com.example.standtime.standtime.feature.utils.StandTimeLanguage
 
 private val builtinClockStyles =
     listOf<@Composable (GalleryClockParts, StandTimeLanguage, Color, Modifier) -> Unit>(
-        ::NothingOfficialClockStyle,
-        ::ContrastSplitClockStyle,
-        ::AuraPulseClockStyle,
-        ::NothingDotClockStyle,
-        ::NasaClockStyle,
-        ::PixelStackClockStyle,
-        ::TokyoClockStyle,
-        ::BraunClockStyle,
-        ::TerminalClockStyle,
-        ::CyberpunkClockStyle,
-        ::PixelPetClockStyle,
-        ::LofiClockStyle,
-        ::RolexClockStyle,
-        ::AnalogZenClockStyle,
-        ::TeslaClockStyle,
-        ::GlassClockStyle,
-        ::LuxuryClockStyle,
-        ::BauhausClockStyle,
-        ::MacOsClockStyle,
-        ::WordsClockStyle,
-        ::CoffeeClockStyle,
-        ::RetroFlipClockStyle,
-        ::BinaryPulseClockStyle,
-        ::SolarOrbitClockStyle,
-        ::TypewriterClockStyle,
-        ::AdminPanelClockStyle,
-        ::SynthwaveClockStyle,
-        ::ZenArchitectureClockStyle,
-        ::ArchitectStudioClockStyle,
-        ::OledStealthClockStyle,
-        ::SwissClockStyle,
-        ::IndustrialClockStyle,
-        ::FrostedStudioClockStyle,
-        ::TokyoNeonClockStyle,
-        ::PaperMinimalismClockStyle,
-        ::CyberGlitchClockStyle,
-        ::AbstractGeometricClockStyle,
-        ::TypographyFocusClockStyle,
-        ::HorizonStudioClockStyle,
-        ::Ps5ClockStyle,
+        ::NothingOfficialClockStyle,     // 01
+        ::ContrastSplitClockStyle,      // 02
+        ::AuraPulseClockStyle,          // 03
+        ::NothingDotClockStyle,         // 04
+        ::NasaClockStyle,               // 05
+        ::BauhausClockStyle,            // 18
+        ::PixelStackClockStyle,         // 06
+        ::IndustrialClockStyle,         // 32
+        ::WordsClockStyle,              // 20
+        ::TokyoClockStyle,              // 07
+        ::ArabicMajlisClockStyle,       // 08
+        ::RetroFlipClockStyle,          // 22
+        ::SwissClockStyle,              // 31
+        ::BraunClockStyle,              // 08
+        ::TerminalClockStyle,           // 09
+        ::CyberpunkClockStyle,          // 10
+        ::LofiClockStyle,               // 12
+        ::RolexClockStyle,              // 13
+        ::AnalogZenClockStyle,          // 14
+        ::TeslaClockStyle,              // 15
+        ::GlassClockStyle,              // 16
+        ::PaperMinimalismClockStyle,    // 35
+        ::LuxuryClockStyle,             // 17
+        ::MacOsClockStyle,              // 19
+        ::CoffeeClockStyle,             // 21
+        ::BinaryPulseClockStyle,        // 23
+        ::SolarOrbitClockStyle,         // 24
+        ::TypewriterClockStyle,         // 25
+        ::AdminPanelClockStyle,         // 26
+        ::SynthwaveClockStyle,          // 27
+        ::ZenArchitectureClockStyle,    // 28
+        ::ArchitectStudioClockStyle,    // 29
+        ::OledStealthClockStyle,        // 30
+        ::FrostedStudioClockStyle,      // 33
+        ::TokyoNeonClockStyle,          // 34
+        ::PixelPetClockStyle,           // 11
+        ::CyberGlitchClockStyle,        // 36
+        ::AbstractGeometricClockStyle,  // 37
+        ::TypographyFocusClockStyle,    // 38
+        ::HorizonStudioClockStyle,      // 39
+        ::Ps5ClockStyle,               // 40
     )
 
 @Composable

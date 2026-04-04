@@ -1,5 +1,6 @@
 package com.example.standtime.standtime.feature.components.style
 
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -25,6 +26,12 @@ fun TerminalClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, ac
     ) {
         Text(text = localizedStringResource(R.string.gallery_terminal_init, language), color = Color(0xFF22C55E), fontFamily = FontFamily.Monospace, fontSize = 22.sp)
         Text(text = "${parts.hours}_${parts.minutes}", modifier = Modifier.padding(top = 12.dp), color = Color(0xFF22C55E), fontFamily = FontFamily.Monospace, fontSize = 100.sp, fontWeight = FontWeight.Bold)
-        Text(text = localizedStringResource(R.string.gallery_terminal_status, language), modifier = Modifier.padding(top = 12.dp), color = Color(0xFF22C55E).copy(alpha = 0.7f), fontFamily = FontFamily.Monospace, fontSize = 18.sp)
+        Text(text = localizedStringResource(R.string.gallery_terminal_status, language,parts.batteryInfo), modifier = Modifier.padding(top = 12.dp), color = Color(0xFF22C55E).copy(alpha = 0.7f), fontFamily = FontFamily.Monospace, fontSize = 18.sp)
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF101418, widthDp = 800, heightDp = 360)
+@Composable
+private fun TerminalClockStylePreview() = ClockStylePreviewFrame { modifier ->
+    TerminalClockStyle(ClockStylePreviewParts, StandTimeLanguage.ENGLISH, ClockStylePreviewAccent, modifier)
 }

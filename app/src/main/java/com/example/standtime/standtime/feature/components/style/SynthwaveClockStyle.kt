@@ -1,5 +1,6 @@
 package com.example.standtime.standtime.feature.components.style
 
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
@@ -24,4 +25,10 @@ fun SynthwaveClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, a
         Text(text = "${parts.hours}:${parts.minutes}", color = Color(0xFF67E8F9), fontSize = 168.sp, fontWeight = FontWeight.Black)
         Text(text = "${parts.hours}:${parts.minutes}", modifier = Modifier.offset(y = 8.dp), color = Color(0xFFF472B6).copy(alpha = 0.55f), fontSize = 168.sp, fontWeight = FontWeight.Black)
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF101418, widthDp = 800, heightDp = 360)
+@Composable
+private fun SynthwaveClockStylePreview() = ClockStylePreviewFrame { modifier ->
+    SynthwaveClockStyle(ClockStylePreviewParts, StandTimeLanguage.ENGLISH, ClockStylePreviewAccent, modifier)
 }

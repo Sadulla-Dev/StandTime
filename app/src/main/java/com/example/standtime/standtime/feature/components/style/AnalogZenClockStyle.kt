@@ -1,5 +1,6 @@
 package com.example.standtime.standtime.feature.components.style
 
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -38,4 +39,10 @@ fun AnalogZenClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, a
             Box(modifier = Modifier.align(Alignment.Center).size(12.dp).clip(CircleShape).background(Color(0xFFEF4444)))
         }
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF101418, widthDp = 800, heightDp = 360)
+@Composable
+private fun AnalogZenClockStylePreview() = ClockStylePreviewFrame { modifier ->
+    AnalogZenClockStyle(ClockStylePreviewParts, StandTimeLanguage.ENGLISH, ClockStylePreviewAccent, modifier)
 }

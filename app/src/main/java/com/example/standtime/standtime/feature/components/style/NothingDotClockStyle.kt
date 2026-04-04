@@ -1,5 +1,11 @@
 package com.example.standtime.standtime.feature.components.style
 
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,10 +19,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -44,55 +52,78 @@ fun NothingDotClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, 
                 Text(
                     text = parts.hours,
                     color = Color.White,
-                    fontSize = 240.sp,
+                    fontSize = 300.sp,
                     fontFamily = FontFamily.Monospace,
                     letterSpacing = (-12).sp
                 )
 
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(16.dp)
-                            .background(Color(0xFFDC2626), CircleShape)
-                    )
-                    Box(
-                        modifier = Modifier
-                            .size(16.dp)
-                            .background(Color(0xFF27272A), CircleShape)
-                    )
-                }
+                BlinkingDots()
 
                 Text(
                     text = parts.minutes,
                     color = Color.White.copy(alpha = 0.4f),
-                    fontSize = 240.sp,
+                    fontSize = 300.sp,
                     fontFamily = FontFamily.Monospace,
                     letterSpacing = (-12).sp
                 )
             }
 
-            Column(
-                modifier = Modifier.padding(top = 48.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Box(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(1.dp)
-                        .background(Color.White.copy(alpha = 0.1f))
-                )
-                Text(
-                    text = localizedStringResource(R.string.gallery_nothing_dot_label, language),
-                    color = Color.White.copy(alpha = 0.2f),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    letterSpacing = 16.sp,
-                    modifier = Modifier.padding(top = 16.dp)
-                )
-            }
+//            Column(
+//                modifier = Modifier.padding(top = 48.dp),
+//                horizontalAlignment = Alignment.CenterHorizontally
+//            ) {
+//                Box(
+//                    modifier = Modifier
+//                        .width(200.dp)
+//                        .height(1.dp)
+//                        .background(Color.White.copy(alpha = 0.1f))
+//                )
+//                Text(
+//                    text = localizedStringResource(R.string.gallery_nothing_dot_label, language),
+//                    color = Color.White.copy(alpha = 0.2f),
+//                    fontSize = 12.sp,
+//                    fontWeight = FontWeight.Medium,
+//                    letterSpacing = 16.sp,
+//                    modifier = Modifier.padding(top = 16.dp)
+//                )
+//            }
         }
     }
+}
+@Composable
+fun BlinkingDots() {
+    val infiniteTransition = rememberInfiniteTransition(label = "dots")
+
+    val alpha1 by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 0.2f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1500),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "dot1"
+    )
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier
+                .size(16.dp)
+                .graphicsLayer { this.alpha = alpha1 }
+                .background(Color(0xFFDC2626), CircleShape)
+        )
+        Box(
+            modifier = Modifier
+                .size(16.dp)
+                .graphicsLayer { this.alpha = alpha1 }
+                .background(Color(0xFF27272A), CircleShape)
+        )
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF101418, widthDp = 800, heightDp = 360)
+@Composable
+private fun NothingDotClockStylePreview() = ClockStylePreviewFrame { modifier ->
+    NothingDotClockStyle(ClockStylePreviewParts, StandTimeLanguage.ENGLISH, ClockStylePreviewAccent, modifier)
 }

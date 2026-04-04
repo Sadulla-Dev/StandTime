@@ -1,5 +1,6 @@
 package com.example.standtime.standtime.feature.components.style
 
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -24,4 +25,10 @@ fun CyberpunkClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, a
         Text(text = "${parts.hours}:${parts.minutes}", color = Color(0xFFC026D3), fontSize = 219.sp, fontWeight = FontWeight.Black)
         Text(text = "${parts.hours}:${parts.minutes}", modifier = Modifier.padding(start = 6.dp, top = 6.dp), color = accentColor, fontSize = 219.sp, fontWeight = FontWeight.Black)
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF101418, widthDp = 800, heightDp = 360)
+@Composable
+private fun CyberpunkClockStylePreview() = ClockStylePreviewFrame { modifier ->
+    CyberpunkClockStyle(ClockStylePreviewParts, StandTimeLanguage.ENGLISH, ClockStylePreviewAccent, modifier)
 }
