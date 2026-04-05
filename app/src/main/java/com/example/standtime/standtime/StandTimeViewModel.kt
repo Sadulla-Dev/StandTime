@@ -47,6 +47,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.coroutines.resume
+import androidx.core.content.edit
 
 class StandTimeViewModel(
     application: Application
@@ -55,14 +56,23 @@ class StandTimeViewModel(
         private const val KEY_GALLERY_INDEX = "selected_gallery_style_index"
         private const val KEY_CUSTOM_CLOCK = "custom_clock_style_json"
         private const val KEY_SAVED_CUSTOM_CLOCKS = "saved_custom_clock_styles_json"
+        private const val KEY_ENABLE_CHARGING_STAND_MODE = "enable_charging_stand_mode"
+        private const val KEY_ENABLE_BURN_IN_PROTECTION = "enable_burn_in_protection"
+        private const val KEY_ENABLE_TAP_REVEAL_INFO = "enable_tap_reveal_info"
     }
 
     private val prefs = application.getSharedPreferences("stand_time_prefs", Context.MODE_PRIVATE)
+    private val initialBatterySnapshot = readBatterySnapshot()
 
     private val _uiState = MutableStateFlow(
         StandTimeUiState(
             locationPermissionGranted = hasLocationPermission(),
             selectedGalleryStyleIndex = prefs.getInt(KEY_GALLERY_INDEX, 0),
+            batteryLevel = initialBatterySnapshot.level,
+            isCharging = initialBatterySnapshot.isCharging,
+            enableChargingStandMode = prefs.getBoolean(KEY_ENABLE_CHARGING_STAND_MODE, false),
+            enableBurnInProtection = prefs.getBoolean(KEY_ENABLE_BURN_IN_PROTECTION, true),
+            enableTapRevealInfo = prefs.getBoolean(KEY_ENABLE_TAP_REVEAL_INFO, true),
             customClockStyle = loadCustomClockStyle(),
             savedCustomClockStyles = loadSavedCustomClockStyles()
         )
@@ -118,6 +128,21 @@ class StandTimeViewModel(
 
             StandTimeIntent.ToggleSeconds -> _uiState.update { state ->
                 state.copy(showSeconds = !state.showSeconds)
+            }
+
+            is StandTimeIntent.SetChargingStandMode -> {
+                _uiState.update { state -> state.copy(enableChargingStandMode = intent.enabled) }
+                prefs.edit().putBoolean(KEY_ENABLE_CHARGING_STAND_MODE, intent.enabled).apply()
+            }
+
+            is StandTimeIntent.SetBurnInProtection -> {
+                _uiState.update { state -> state.copy(enableBurnInProtection = intent.enabled) }
+                prefs.edit().putBoolean(KEY_ENABLE_BURN_IN_PROTECTION, intent.enabled).apply()
+            }
+
+            is StandTimeIntent.SetTapRevealInfo -> {
+                _uiState.update { state -> state.copy(enableTapRevealInfo = intent.enabled) }
+                prefs.edit().putBoolean(KEY_ENABLE_TAP_REVEAL_INFO, intent.enabled).apply()
             }
 
             is StandTimeIntent.LocationPermissionChanged -> {
@@ -350,9 +375,9 @@ class StandTimeViewModel(
                         )
                     }
                 }
-                prefs.edit()
-                    .putInt(KEY_GALLERY_INDEX, _uiState.value.selectedGalleryStyleIndex)
-                    .apply()
+                prefs.edit {
+                    putInt(KEY_GALLERY_INDEX, _uiState.value.selectedGalleryStyleIndex)
+                }
                 saveSavedCustomClockStyles()
             }
 
@@ -368,9 +393,9 @@ class StandTimeViewModel(
                         editingCustomClockStyleId = if (state.editingCustomClockStyleId == intent.id) null else state.editingCustomClockStyleId
                     )
                 }
-                prefs.edit()
-                    .putInt(KEY_GALLERY_INDEX, _uiState.value.selectedGalleryStyleIndex)
-                    .apply()
+                prefs.edit {
+                    putInt(KEY_GALLERY_INDEX, _uiState.value.selectedGalleryStyleIndex)
+                }
                 saveSavedCustomClockStyles()
             }
         }
@@ -456,7 +481,7 @@ class StandTimeViewModel(
                 )
             }
         }
-        prefs.edit().putString(KEY_SAVED_CUSTOM_CLOCKS, json.toString()).apply()
+        prefs.edit { putString(KEY_SAVED_CUSTOM_CLOCKS, json.toString()) }
     }
 
     private fun loadSavedCustomClockStyles(): List<SavedCustomClockStyle> {

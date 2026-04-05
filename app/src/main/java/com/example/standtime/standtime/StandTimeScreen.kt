@@ -47,7 +47,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -135,7 +134,13 @@ fun StandTimeRoute(
     )
 
     val rootPagerState = rememberPagerState(pageCount = { 3 })
-    val scope = rememberCoroutineScope()
+    val isChargingStandModeActive = state.enableChargingStandMode && state.isCharging
+
+    LaunchedEffect(isChargingStandModeActive, isCustomStudioOpen) {
+        if (isChargingStandModeActive && !isCustomStudioOpen && rootPagerState.currentPage != 0) {
+            rootPagerState.animateScrollToPage(0)
+        }
+    }
 
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         if (showCustomCreateChoice) {
@@ -341,6 +346,7 @@ private fun ClockStylesPage(
                     language = language,
                     accentColor = accentColor,
                     customStyles = state.savedCustomClockStyles,
+                    burnInProtectionEnabled = state.enableBurnInProtection,
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -358,7 +364,9 @@ private fun ClockStylesPage(
         ) {
             Text(
                 text = localizedStringResource(
-                    R.string.gallery_charging_status, language, state.batteryLevel
+                    if (state.isCharging) R.string.gallery_charging_status else R.string.gallery_battery_status,
+                    language,
+                    state.batteryLevel
                 ),
                 modifier = Modifier
                     .galleryOverlaySurface(RoundedCornerShape(999.dp))
@@ -386,6 +394,40 @@ private fun ClockStylesPage(
                 letterSpacing = 1.2.sp,
                 color = GalleryOverlayContentColor
             )
+        }
+
+        if (state.enableTapRevealInfo) {
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(start = 20.dp, end = 96.dp, bottom = 26.dp)
+                    .horizontalScroll(rememberScrollState())
+                    .graphicsLayer { alpha = overlayAlpha },
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                GalleryInfoChip(
+                    text = listOf(state.dayText, state.dateText)
+                        .filter { it.isNotBlank() }
+                        .joinToString("  •  ")
+                )
+                if (state.showWeather && (state.weatherTemperature.isNotBlank() || state.weatherSummary.isNotBlank())) {
+                    GalleryInfoChip(
+                        text = listOf(state.weatherTemperature, state.weatherSummary)
+                            .filter { it.isNotBlank() }
+                            .joinToString("  •  ")
+                    )
+                }
+                if (state.showBattery) {
+                    GalleryInfoChip(
+                        text = localizedStringResource(
+                            if (state.isCharging) R.string.gallery_info_charging_value else R.string.gallery_info_battery_value,
+                            language,
+                            state.batteryLevel
+                        )
+                    )
+                }
+            }
         }
 
         Row(
@@ -432,6 +474,22 @@ private fun ClockStylesPage(
 
 private val GalleryOverlayChipColor = Color.Black.copy(alpha = 0.28f)
 private val GalleryOverlayContentColor = Color.White
+
+@Composable
+private fun GalleryInfoChip(text: String) {
+    if (text.isBlank()) return
+    Text(
+        text = text,
+        modifier = Modifier
+            .galleryOverlaySurface(RoundedCornerShape(999.dp))
+            .padding(horizontal = 12.dp, vertical = 7.dp),
+        fontFamily = FontFamily.Monospace,
+        fontWeight = FontWeight.Medium,
+        fontSize = 10.sp,
+        letterSpacing = 0.4.sp,
+        color = GalleryOverlayContentColor
+    )
+}
 
 private fun Modifier.galleryOverlaySurface(shape: Shape): Modifier = this
     .shadow(
@@ -551,6 +609,7 @@ private fun GalleryClockPanel(
                     language = language,
                     accentColor = accentColor,
                     customStyles = state.savedCustomClockStyles,
+                    burnInProtectionEnabled = state.enableBurnInProtection,
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -796,6 +855,32 @@ private fun SettingsCard(
                         label = localizedStringResource(R.string.show_seconds_label, language),
                         checked = state.showSeconds,
                         onCheckedChange = { onIntent(StandTimeIntent.ToggleSeconds) })
+                }
+            }
+
+            SettingSection(
+                title = localizedStringResource(R.string.stand_features_title, language)
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    SettingRow(
+                        label = localizedStringResource(R.string.charging_stand_mode_label, language),
+                        checked = state.enableChargingStandMode,
+                        onCheckedChange = { onIntent(StandTimeIntent.SetChargingStandMode(it)) },
+                        supportingText = localizedStringResource(
+                            R.string.charging_stand_mode_hint,
+                            language
+                        )
+                    )
+                    SettingRow(
+                        label = localizedStringResource(R.string.burn_in_protection_label, language),
+                        checked = state.enableBurnInProtection,
+                        onCheckedChange = { onIntent(StandTimeIntent.SetBurnInProtection(it)) }
+                    )
+                    SettingRow(
+                        label = localizedStringResource(R.string.tap_reveal_info_label, language),
+                        checked = state.enableTapRevealInfo,
+                        onCheckedChange = { onIntent(StandTimeIntent.SetTapRevealInfo(it)) }
+                    )
                 }
             }
 
@@ -1245,19 +1330,37 @@ private fun SettingSection(
 
 @Composable
 private fun SettingRow(
-    label: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit
+    label: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    supportingText: String? = null
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            if (!supportingText.isNullOrBlank()) {
+                Text(
+                    text = supportingText,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange
         )
-        Switch(checked = checked, onCheckedChange = onCheckedChange)
     }
 }
 

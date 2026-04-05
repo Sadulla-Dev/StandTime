@@ -101,10 +101,11 @@ fun GalleryClockContent(
     language: StandTimeLanguage,
     accentColor: Color,
     customStyles: List<SavedCustomClockStyle> = emptyList(),
+    burnInProtectionEnabled: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     ResponsiveGalleryFrame(modifier = modifier) {
-        AnimatedGalleryStyle(index = index) {
+        AnimatedGalleryStyle(index = index, burnInProtectionEnabled = burnInProtectionEnabled) {
             if (index < builtinClockStyles.size) {
                 builtinClockStyles[index].invoke(
                     parts,

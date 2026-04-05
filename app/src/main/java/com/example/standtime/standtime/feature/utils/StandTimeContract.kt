@@ -126,6 +126,9 @@ data class StandTimeUiState(
     val mediaSubtitle: String = "",
     val selectedGalleryStyleIndex: Int = 0,
     val isMediaPlaying: Boolean = false,
+    val enableChargingStandMode: Boolean = false,
+    val enableBurnInProtection: Boolean = true,
+    val enableTapRevealInfo: Boolean = true,
     val customClockStyle: CustomClockStyleSettings = CustomClockStyleSettings(),
     val savedCustomClockStyles: List<SavedCustomClockStyle> = emptyList(),
     val editingCustomClockStyleId: String? = null
@@ -142,6 +145,9 @@ sealed interface StandTimeIntent {
     data object ToggleBattery : StandTimeIntent
     data object TogglePomodoro : StandTimeIntent
     data object ToggleSeconds : StandTimeIntent
+    data class SetChargingStandMode(val enabled: Boolean) : StandTimeIntent
+    data class SetBurnInProtection(val enabled: Boolean) : StandTimeIntent
+    data class SetTapRevealInfo(val enabled: Boolean) : StandTimeIntent
     data class LocationPermissionChanged(val granted: Boolean) : StandTimeIntent
     data object RefreshWeather : StandTimeIntent
     data class SelectPomodoroPreset(val minutes: Int) : StandTimeIntent

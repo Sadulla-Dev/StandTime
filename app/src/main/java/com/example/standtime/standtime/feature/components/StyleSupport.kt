@@ -86,19 +86,6 @@ private fun String.toKanji(): String {
     val digits = listOf("零", "一", "二", "三", "四", "五", "六", "七", "八", "九")
     return map { digits.getOrElse(it.digitToIntOrNull() ?: 0) { "零" } }.joinToString("")
 }
-
-data class GalleryStyleSpec(
-    val name: String,
-    val background: Brush,
-    val darkOverlay: Boolean = true
-)
-
-fun galleryOverlayColor(index: Int): Color = if (index in setOf(9, 12, 17, 23, 24, 27)) {
-    Color(0xFF18181B).copy(alpha = 0.7f)
-} else {
-    Color.White.copy(alpha = 0.6f)
-}
-
 @Composable
 fun GalleryMetricCard(
     title: String,
@@ -290,6 +277,7 @@ fun ResponsiveGalleryFrame(
 @Composable
 fun AnimatedGalleryStyle(
     index: Int,
+    burnInProtectionEnabled: Boolean = false,
     content: @Composable BoxScope.() -> Unit
 ) {
     var visible by remember(index) { mutableStateOf(false) }
@@ -312,7 +300,8 @@ fun AnimatedGalleryStyle(
         animationSpec = tween(durationMillis = 520, easing = FastOutSlowInEasing),
         label = "galleryTranslateY"
     )
-    val drift by rememberInfiniteTransition(label = "galleryDrift").animateFloat(
+    val ambientTransition = rememberInfiniteTransition(label = "galleryAmbient")
+    val drift by ambientTransition.animateFloat(
         initialValue = -3f,
         targetValue = 3f,
         animationSpec = infiniteRepeatable(
@@ -320,6 +309,24 @@ fun AnimatedGalleryStyle(
             repeatMode = RepeatMode.Reverse
         ),
         label = "galleryFloat"
+    )
+    val burnInX by ambientTransition.animateFloat(
+        initialValue = -2.5f,
+        targetValue = 2.5f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 46000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "galleryBurnInX"
+    )
+    val burnInY by ambientTransition.animateFloat(
+        initialValue = 1.5f,
+        targetValue = -1.5f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 61000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "galleryBurnInY"
     )
 
     Box(
@@ -329,7 +336,8 @@ fun AnimatedGalleryStyle(
                 this.alpha = alpha
                 scaleX = scale
                 scaleY = scale
-                translationY = settleY + drift
+                translationX = if (burnInProtectionEnabled) burnInX else 0f
+                translationY = settleY + drift + if (burnInProtectionEnabled) burnInY else 0f
             },
         content = content
     )
