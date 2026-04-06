@@ -50,6 +50,10 @@
     <string name="charging_stand_mode_hint">Поведение по умолчанию: работает маленькое фоновое уведомление, а при подключении зарядки показывается алерт вместо открытия экрана.</string>
     <string name="burn_in_protection_label">Защита от выгорания</string>
     <string name="tap_reveal_info_label">Показывать инфо по касанию</string>
+    <string name="physics_bubble_intro_eyebrow">Stand Time</string>
+    <string name="physics_bubble_intro_title">Теперь ваш телефон — это часы.</string>
+    <string name="physics_bubble_intro_description">Красивые standby-часы, custom style’ы и более чистый опыт для стола или прикроватной тумбы.</string>
+    <string name="physics_bubble_continue">Продолжить</string>
     <string name="charging_stand_notification_channel">Режим подставки при зарядке</string>
     <string name="charging_stand_notification_channel_desc">Уведомления для открытия Stand Time во время зарядки.</string>
     <string name="charging_stand_monitor_channel">Монитор зарядной подставки</string>

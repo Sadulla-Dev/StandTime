@@ -54,6 +54,7 @@ class StandTimeViewModel(
 ) : AndroidViewModel(application) {
     companion object {
         private const val KEY_GALLERY_INDEX = "selected_gallery_style_index"
+        private const val KEY_LANGUAGE = "stand_time_language"
         private const val KEY_CUSTOM_CLOCK = "custom_clock_style_json"
         private const val KEY_SAVED_CUSTOM_CLOCKS = "saved_custom_clock_styles_json"
         private const val KEY_ENABLE_CHARGING_STAND_MODE = "enable_charging_stand_mode"
@@ -68,6 +69,8 @@ class StandTimeViewModel(
         StandTimeUiState(
             locationPermissionGranted = hasLocationPermission(),
             selectedGalleryStyleIndex = prefs.getInt(KEY_GALLERY_INDEX, 0),
+            language = prefs.getString(KEY_LANGUAGE, null)?.toStandTimeLanguage()
+                ?: StandTimeLanguage.ENGLISH,
             batteryLevel = initialBatterySnapshot.level,
             isCharging = initialBatterySnapshot.isCharging,
             enableChargingStandMode = prefs.getBoolean(KEY_ENABLE_CHARGING_STAND_MODE, false),
@@ -97,6 +100,7 @@ class StandTimeViewModel(
 
             is StandTimeIntent.ChangeLanguage -> {
                 _uiState.update { state -> state.copy(language = intent.language) }
+                prefs.edit().putString(KEY_LANGUAGE, intent.language.name).apply()
                 if (_uiState.value.locationPermissionGranted) {
                     refreshWeather()
                 }
@@ -913,6 +917,10 @@ class StandTimeViewModel(
         StandTimeLanguage.UZBEK -> Locale.forLanguageTag("uz")
         StandTimeLanguage.RUSSIAN -> Locale.forLanguageTag("ru")
     }
+
+    private fun String.toStandTimeLanguage(): StandTimeLanguage? = runCatching {
+        StandTimeLanguage.valueOf(this)
+    }.getOrNull()
 }
 
 private data class BatterySnapshot(

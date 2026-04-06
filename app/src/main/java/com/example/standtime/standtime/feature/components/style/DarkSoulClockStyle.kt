@@ -147,16 +147,6 @@ fun DarkSoulClockStyle(
             )
         )
 
-        Text(
-            text = "✦  DARK SOUL  ✦",
-            style = TextStyle(
-                color = Color(0xFF884422),
-                fontSize = 13.sp,
-                fontFamily = FontFamily.Serif,
-                letterSpacing = 3.sp
-            ),
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
     }
 }
 

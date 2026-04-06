@@ -50,6 +50,10 @@
     <string name="charging_stand_mode_hint">Default behavior: keep a small background notification active, then show a charging alert instead of opening the screen.</string>
     <string name="burn_in_protection_label">Burn-in protection</string>
     <string name="tap_reveal_info_label">Tap to reveal info</string>
+    <string name="physics_bubble_intro_eyebrow">Stand Time</string>
+    <string name="physics_bubble_intro_title">Your phone, now a clock.</string>
+    <string name="physics_bubble_intro_description">Beautiful standby clocks, custom styles, and a cleaner desk or bedside experience.</string>
+    <string name="physics_bubble_continue">Continue</string>
     <string name="charging_stand_notification_channel">Charging stand mode</string>
     <string name="charging_stand_notification_channel_desc">Notifications for opening Stand Time while charging.</string>
     <string name="charging_stand_monitor_channel">Charging stand monitor</string>

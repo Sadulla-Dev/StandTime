@@ -98,13 +98,10 @@ fun StandTimeRoute(
     val accentColor = state.accentColor()
     var isCustomStudioOpen by rememberSaveable { mutableStateOf(false) }
     var showCustomCreateChoice by rememberSaveable { mutableStateOf(false) }
-
-    var hasRequestedLocationPermission by rememberSaveable { mutableStateOf(false) }
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { grantResults ->
         val granted = grantResults.values.any { it }
-        hasRequestedLocationPermission = true
         onIntent(StandTimeIntent.LocationPermissionChanged(granted))
         if (granted) onIntent(StandTimeIntent.RefreshWeather)
     }
@@ -116,13 +113,6 @@ fun StandTimeRoute(
                     Manifest.permission.ACCESS_FINE_LOCATION
                 )
             )
-        }
-    }
-
-    LaunchedEffect(state.locationPermissionGranted, hasRequestedLocationPermission) {
-        if (!state.locationPermissionGranted && !hasRequestedLocationPermission) {
-            hasRequestedLocationPermission = true
-            requestLocationPermission()
         }
     }
 

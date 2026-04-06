@@ -56,7 +56,6 @@ val galleryStyles: List<GalleryStyleEntry> = listOf(
     GalleryStyleEntry(R.string.gallery_style_hologram),
     GalleryStyleEntry(R.string.gallery_style_abstract),
     GalleryStyleEntry(R.string.gallery_style_typography),
-    GalleryStyleEntry(R.string.gallery_style_horizon),
     GalleryStyleEntry(R.string.gallery_style_ps5),
     GalleryStyleEntry(R.string.gallery_style_dark_soul),
 )

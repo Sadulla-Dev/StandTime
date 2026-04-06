@@ -161,7 +161,9 @@ private fun TextBlock(
         modifier = modifier,
         color = color,
         textAlign = TextAlign.Center,
-        style = custom.font.toTextStyle(size)
+        style = custom.font.toTextStyle(size),
+        softWrap = false,
+        maxLines = 1
     )
 }
 
@@ -178,7 +180,9 @@ private fun MetaLine(
         modifier = modifier,
         color = color,
         textAlign = TextAlign.Center,
-        style = custom.font.toTextStyle(size)
+        style = custom.font.toTextStyle(size),
+        softWrap = false,
+        maxLines = 1
     )
 }
 

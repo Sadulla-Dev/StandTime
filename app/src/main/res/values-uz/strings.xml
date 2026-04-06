@@ -50,6 +50,10 @@
     <string name="charging_stand_mode_hint">Standart holat: kichik fon notification’i ishlab turadi, keyin ekran ochish o‘rniga zaryad notification’i chiqadi.</string>
     <string name="burn_in_protection_label">Burn-in himoyasi</string>
     <string name="tap_reveal_info_label">Bosganda ma\'lumotni ko\'rsatish</string>
+    <string name="physics_bubble_intro_eyebrow">Stand Time</string>
+    <string name="physics_bubble_intro_title">Telefoningiz endi soatga aylanadi.</string>
+    <string name="physics_bubble_intro_description">Chiroyli standby clock’lar, custom style’lar va stol yoki krovat yonida yanada toza tajriba.</string>
+    <string name="physics_bubble_continue">Davom etish</string>
     <string name="charging_stand_notification_channel">Zaryad stend rejimi</string>
     <string name="charging_stand_notification_channel_desc">Telefon zaryadda bo‘lganda Stand Time’ni ochish uchun notificationlar.</string>
     <string name="charging_stand_monitor_channel">Zaryad stend kuzatuvi</string>

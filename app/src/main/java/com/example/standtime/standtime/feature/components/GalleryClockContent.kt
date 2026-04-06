@@ -20,7 +20,6 @@ import com.example.standtime.standtime.feature.components.style.CyberGlitchClock
 import com.example.standtime.standtime.feature.components.style.CyberpunkClockStyle
 import com.example.standtime.standtime.feature.components.style.FrostedStudioClockStyle
 import com.example.standtime.standtime.feature.components.style.GlassClockStyle
-import com.example.standtime.standtime.feature.components.style.HorizonStudioClockStyle
 import com.example.standtime.standtime.feature.components.style.IndustrialClockStyle
 import com.example.standtime.standtime.feature.components.style.LofiClockStyle
 import com.example.standtime.standtime.feature.components.style.LuxuryClockStyle
@@ -105,9 +104,8 @@ private val builtinClockStyles =
         ::HologramClockStyle,            // 44
         ::AbstractGeometricClockStyle,   // 45
         ::TypographyFocusClockStyle,     // 46
-        ::HorizonStudioClockStyle,       // 47
-        ::Ps5ClockStyle,                 // 48
-        ::DarkSoulClockStyle,            // 49
+        ::Ps5ClockStyle,                 // 47
+        ::DarkSoulClockStyle,            // 48
     )
 
 @Composable

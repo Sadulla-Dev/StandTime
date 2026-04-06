@@ -460,17 +460,6 @@ private fun TypographyFocusClockStylePreview() = ClockPreview {
 
 @ClockLandscapePreview
 @Composable
-private fun HorizonStudioClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.HorizonStudioClockStyle(
-        previewParts,
-        StandTimeLanguage.ENGLISH,
-        previewAccent,
-        it
-    )
-}
-
-@ClockLandscapePreview
-@Composable
 private fun ContrastSplitClockStylePreview() = ClockPreview {
     _root_ide_package_.com.example.standtime.standtime.feature.components.style.ContrastSplitClockStyle(
         previewParts,

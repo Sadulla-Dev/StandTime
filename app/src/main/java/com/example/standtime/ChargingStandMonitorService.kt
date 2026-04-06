@@ -110,6 +110,8 @@ class ChargingStandMonitorService : Service() {
     }
 
     private fun postChargingReadyNotification() {
+        if (AppVisibilityTracker.isAppVisible) return
+
         if (
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(
