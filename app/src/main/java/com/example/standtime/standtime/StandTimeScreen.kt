@@ -77,6 +77,7 @@ import com.example.standtime.standtime.feature.components.galleryParts
 import com.example.standtime.standtime.feature.components.galleryStyleAt
 import com.example.standtime.standtime.feature.components.galleryStyleCount
 import com.example.standtime.standtime.feature.components.galleryStyles
+import com.example.standtime.standtime.feature.components.isViewedPomodoroRunning
 import com.example.standtime.standtime.feature.components.pomodoroProgress
 import com.example.standtime.standtime.feature.components.pomodoroTotalSeconds
 import com.example.standtime.standtime.feature.components.remainingPomodoroText
@@ -1086,6 +1087,7 @@ private fun PomodoroCard(
     accentColor: Color,
     onIntent: (StandTimeIntent) -> Unit
 ) {
+    val isViewedPhaseRunning = state.isViewedPomodoroRunning()
     val progress by animateFloatAsState(
         targetValue = state.pomodoroProgress(),
         animationSpec = tween(durationMillis = 500),
@@ -1108,19 +1110,28 @@ private fun PomodoroCard(
         PomodoroPhase.LONG_BREAK -> 4
     }
     val statusText = when {
-        state.isPomodoroRunning && state.pomodoroPhase == PomodoroPhase.FOCUS ->
+        isViewedPhaseRunning && state.pomodoroPhase == PomodoroPhase.FOCUS ->
             localizedStringResource(R.string.pomodoro_running, language)
 
-        state.isPomodoroRunning ->
+        isViewedPhaseRunning ->
             localizedStringResource(R.string.pomodoro_break_running, language)
+
+        state.isPomodoroRunning && state.pomodoroActivePhase != null ->
+            localizedStringResource(
+                R.string.pomodoro_background_running,
+                language,
+                localizedStringResource(pomodoroPhaseLabelRes(state.pomodoroActivePhase), language)
+            )
 
         else -> localizedStringResource(R.string.pomodoro_ready, language)
     }
 
     PanelCard(accentColor = accentColor, modifier = Modifier.fillMaxSize()) {
-         Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(18.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -1129,7 +1140,7 @@ private fun PomodoroCard(
             ) {
                 Text(
                     text = localizedStringResource(R.string.pomodoro_title, language),
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Surface(
@@ -1138,8 +1149,8 @@ private fun PomodoroCard(
                 ) {
                     Text(
                         text = currentPhaseLabel,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
-                        style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                        style = MaterialTheme.typography.labelMedium,
                         color = accentColor
                     )
                 }
@@ -1147,27 +1158,36 @@ private fun PomodoroCard(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(18.dp),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                PomodoroProgressRing(
+                    progress = progress,
+                    accentColor = accentColor,
+                    modifier = Modifier.size(112.dp)
                 ) {
                     Text(
-                        text = statusText,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                        text = "${(progress * 100).toInt()}%",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = accentColor,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = state.remainingPomodoroText(),
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = accentColor,
+                        textAlign = TextAlign.Start
                     )
                     Text(
-                        text = localizedStringResource(
-                            R.string.pomodoro_cycle_progress,
-                            language,
-                            cycleIndex,
-                            4
-                        ),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        text = statusText,
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
                         text = localizedStringResource(
@@ -1175,93 +1195,111 @@ private fun PomodoroCard(
                             language,
                             nextPhaseLabel
                         ),
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                }
-
-                PomodoroProgressRing(
-                    progress = progress,
-                    accentColor = accentColor,
-                    modifier = Modifier.size(154.dp)
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(2.dp)
-                    ) {
-                        Text(
-                            text = state.remainingPomodoroText(),
-                            style = MaterialTheme.typography.displaySmall,
-                            color = accentColor,
-                            textAlign = TextAlign.Center
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        CompactInfoPill(
+                            text = localizedStringResource(
+                                R.string.pomodoro_cycle_progress,
+                                language,
+                                cycleIndex,
+                                4
+                            )
                         )
-                        Text(
+                        CompactInfoPill(
                             text = localizedStringResource(
                                 R.string.pomodoro_preset_label,
                                 language,
                                 (state.pomodoroTotalSeconds() / 60).toString()
-                            ),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         )
                     }
                 }
             }
 
-            ChipRow {
-                listOf(
-                    PomodoroPhase.FOCUS,
-                    PomodoroPhase.SHORT_BREAK,
-                    PomodoroPhase.LONG_BREAK
-                ).forEach { phase ->
-                    FilterChip(
-                        selected = state.pomodoroPhase == phase,
-                        onClick = { onIntent(StandTimeIntent.SetPomodoroPhase(phase)) },
-                        label = {
-                            Text(
-                                localizedStringResource(
-                                    pomodoroPhaseLabelRes(phase),
-                                    language
-                                )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = currentPhaseLabel,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Box(modifier = Modifier.weight(1f)) {
+                    ChipRow {
+                        listOf(
+                            PomodoroPhase.FOCUS,
+                            PomodoroPhase.SHORT_BREAK,
+                            PomodoroPhase.LONG_BREAK
+                        ).forEach { phase ->
+                            FilterChip(
+                                selected = state.pomodoroPhase == phase,
+                                onClick = { onIntent(StandTimeIntent.SetPomodoroPhase(phase)) },
+                                label = {
+                                    Text(
+                                        localizedStringResource(
+                                            pomodoroPhaseLabelRes(phase),
+                                            language
+                                        ),
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                }
                             )
                         }
-                    )
-                }
-            }
-
-            ChipRow {
-                state.pomodoroPresets.forEach { preset ->
-                    FilterChip(
-                        selected = state.selectedPomodoroMinutes == preset.focusMinutes,
-                        onClick = { onIntent(StandTimeIntent.SelectPomodoroPreset(preset.focusMinutes)) },
-                        label = {
-                            Text(
-                                localizedStringResource(
-                                    R.string.pomodoro_preset_label,
-                                    language,
-                                    preset.label
-                                )
-                            )
-                        }
-                    )
+                    }
                 }
             }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = localizedStringResource(R.string.presets_title, language),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Box(modifier = Modifier.weight(1f)) {
+                    ChipRow {
+                        state.pomodoroPresets.forEach { preset ->
+                            FilterChip(
+                                selected = state.selectedPomodoroMinutes == preset.focusMinutes,
+                                onClick = { onIntent(StandTimeIntent.SelectPomodoroPreset(preset.focusMinutes)) },
+                                label = {
+                                    Text(
+                                        localizedStringResource(
+                                            R.string.pomodoro_preset_label,
+                                            language,
+                                            preset.label
+                                        ),
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Button(
                     onClick = { onIntent(StandTimeIntent.TogglePomodoroTimer) },
                     modifier = Modifier.weight(1.2f),
-                    shape = RoundedCornerShape(20.dp),
+                    shape = RoundedCornerShape(18.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = accentColor,
                         contentColor = MaterialTheme.colorScheme.surface
                     )
                 ) {
                     Text(
-                        if (state.isPomodoroRunning) {
+                        if (isViewedPhaseRunning) {
                             localizedStringResource(R.string.pomodoro_pause, language)
                         } else {
                             localizedStringResource(R.string.pomodoro_start, language)
@@ -1284,6 +1322,21 @@ private fun PomodoroCard(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun CompactInfoPill(text: String) {
+    Surface(
+        shape = RoundedCornerShape(999.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f)
+    ) {
+        Text(
+            text = text,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 

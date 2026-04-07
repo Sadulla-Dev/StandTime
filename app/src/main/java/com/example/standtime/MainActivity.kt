@@ -41,6 +41,16 @@ class MainActivity : ComponentActivity() {
         private const val KEY_COMPLETED_INITIAL_PERMISSION_FLOW = "completed_initial_permission_flow"
     }
 
+    override fun onStart() {
+        super.onStart()
+        AppVisibilityTracker.isAppVisible = true
+    }
+
+    override fun onStop() {
+        AppVisibilityTracker.isAppVisible = false
+        super.onStop()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -63,12 +73,6 @@ class MainActivity : ComponentActivity() {
                     ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
                 }
                 onDispose { }
-            }
-            DisposableEffect(Unit) {
-                AppVisibilityTracker.isAppVisible = true
-                onDispose {
-                    AppVisibilityTracker.isAppVisible = false
-                }
             }
             var hasRequestedNotificationPermission by rememberSaveable {
                 mutableStateOf(false)
@@ -163,6 +167,7 @@ class MainActivity : ComponentActivity() {
 
                 LaunchedEffect(Unit) {
                     ChargingStandNotificationHelper.ensureChannels(this@MainActivity)
+                    PomodoroNotificationHelper.ensureChannel(this@MainActivity)
                 }
 
                 LaunchedEffect(uiState.enableChargingStandMode, notificationPermissionNeeded, shouldRunInitialPermissionFlow) {

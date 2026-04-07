@@ -10,8 +10,9 @@ import com.example.standtime.ui.theme.LimeAccent
 import com.example.standtime.ui.theme.SkyAccent
 
 internal fun StandTimeUiState.remainingPomodoroText(): String {
-    val minutes = pomodoroRemainingSeconds / 60
-    val seconds = pomodoroRemainingSeconds % 60
+    val totalSeconds = pomodoroRemainingForViewedPhase()
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
     return "%02d:%02d".format(minutes, seconds)
 }
 
@@ -30,9 +31,21 @@ internal fun StandTimeUiState.pomodoroTotalSeconds(phase: PomodoroPhase = pomodo
 
 internal fun StandTimeUiState.pomodoroProgress(): Float {
     val totalSeconds = pomodoroTotalSeconds().coerceAtLeast(1)
-    val elapsedSeconds = (totalSeconds - pomodoroRemainingSeconds).coerceIn(0, totalSeconds)
+    val elapsedSeconds = (totalSeconds - pomodoroRemainingForViewedPhase()).coerceIn(0, totalSeconds)
     return elapsedSeconds / totalSeconds.toFloat()
 }
+
+internal fun StandTimeUiState.pomodoroRemainingForPhase(phase: PomodoroPhase): Int = when (phase) {
+    PomodoroPhase.FOCUS -> pomodoroFocusRemainingSeconds
+    PomodoroPhase.SHORT_BREAK -> pomodoroShortBreakRemainingSeconds
+    PomodoroPhase.LONG_BREAK -> pomodoroLongBreakRemainingSeconds
+}
+
+internal fun StandTimeUiState.pomodoroRemainingForViewedPhase(): Int =
+    pomodoroRemainingForPhase(pomodoroPhase)
+
+internal fun StandTimeUiState.isViewedPomodoroRunning(): Boolean =
+    isPomodoroRunning && pomodoroActivePhase == pomodoroPhase
 
 internal fun StandTimeUiState.accentColor(): Color = when (accentPalette) {
     AccentPalette.LIME -> LimeAccent

@@ -25,6 +25,7 @@
     <string name="pomodoro_break_running">Идет время перерыва</string>
     <string name="pomodoro_paused">Можно начинать в любой момент</string>
     <string name="pomodoro_ready">Можно начинать в любой момент</string>
+    <string name="pomodoro_background_running">%1$s продолжается в фоне</string>
     <string name="pomodoro_start">Старт</string>
     <string name="pomodoro_pause">Пауза</string>
     <string name="pomodoro_reset">Сброс</string>
@@ -34,6 +35,12 @@
     <string name="pomodoro_long_break">Длинный перерыв</string>
     <string name="pomodoro_next_up">Дальше: %1$s</string>
     <string name="pomodoro_cycle_progress">Сессия %1$d из %2$d</string>
+    <string name="pomodoro_notification_channel">Уведомления Помодоро</string>
+    <string name="pomodoro_notification_channel_desc">Уведомления о переходах и завершении таймера Помодоро.</string>
+    <string name="pomodoro_focus_complete">Фокус-сессия завершена</string>
+    <string name="pomodoro_short_break_complete">Короткий перерыв завершен</string>
+    <string name="pomodoro_long_break_complete">Длинный перерыв завершен</string>
+    <string name="pomodoro_notification_body">Дальше: %1$s</string>
     <string name="media_title">Медиа</string>
     <string name="media_permission_body">Включите доступ к уведомлениям, чтобы приложение нашло текущий плеер.</string>
     <string name="media_enable_access">Включить доступ</string>

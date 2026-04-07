@@ -25,6 +25,7 @@
     <string name="pomodoro_break_running">Break time is on</string>
     <string name="pomodoro_paused">Ready when you are</string>
     <string name="pomodoro_ready">Ready when you are</string>
+    <string name="pomodoro_background_running">%1$s keeps running in the background</string>
     <string name="pomodoro_start">Start</string>
     <string name="pomodoro_pause">Pause</string>
     <string name="pomodoro_reset">Reset</string>
@@ -34,6 +35,12 @@
     <string name="pomodoro_long_break">Long break</string>
     <string name="pomodoro_next_up">Next up: %1$s</string>
     <string name="pomodoro_cycle_progress">Session %1$d of %2$d</string>
+    <string name="pomodoro_notification_channel">Pomodoro alerts</string>
+    <string name="pomodoro_notification_channel_desc">Alerts for Pomodoro timer transitions and completions.</string>
+    <string name="pomodoro_focus_complete">Focus session complete</string>
+    <string name="pomodoro_short_break_complete">Short break complete</string>
+    <string name="pomodoro_long_break_complete">Long break complete</string>
+    <string name="pomodoro_notification_body">Next up: %1$s</string>
     <string name="media_title">Media</string>
     <string name="media_permission_body">Enable notification access so the app can find the current player.</string>
     <string name="media_enable_access">Enable access</string>

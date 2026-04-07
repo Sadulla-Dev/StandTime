@@ -25,6 +25,7 @@
     <string name="pomodoro_break_running">Tanaffus vaqti ketmoqda</string>
     <string name="pomodoro_paused">Tayyor bo‘lsangiz boshlang</string>
     <string name="pomodoro_ready">Tayyor bo‘lsangiz boshlang</string>
+    <string name="pomodoro_background_running">%1$s fon rejimida davom etmoqda</string>
     <string name="pomodoro_start">Boshlash</string>
     <string name="pomodoro_pause">Pauza</string>
     <string name="pomodoro_reset">Qayta</string>
@@ -34,6 +35,12 @@
     <string name="pomodoro_long_break">Uzun tanaffus</string>
     <string name="pomodoro_next_up">Keyingisi: %1$s</string>
     <string name="pomodoro_cycle_progress">Sessiya %1$d / %2$d</string>
+    <string name="pomodoro_notification_channel">Pomodoro bildirishnomalari</string>
+    <string name="pomodoro_notification_channel_desc">Pomodoro timer fazalari va tugashi uchun bildirishnomalar.</string>
+    <string name="pomodoro_focus_complete">Fokus sessiyasi tugadi</string>
+    <string name="pomodoro_short_break_complete">Qisqa tanaffus tugadi</string>
+    <string name="pomodoro_long_break_complete">Uzun tanaffus tugadi</string>
+    <string name="pomodoro_notification_body">Keyingisi: %1$s</string>
     <string name="media_title">Media</string>
     <string name="media_permission_body">Joriy playerni topish uchun notification access yoqing.</string>
     <string name="media_enable_access">Ruxsatni yoqish</string>

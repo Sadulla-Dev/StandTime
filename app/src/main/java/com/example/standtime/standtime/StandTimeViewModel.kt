@@ -22,12 +22,14 @@ import com.example.standtime.standtime.feature.utils.CustomClockFont
 import com.example.standtime.standtime.feature.utils.CustomClockStyleSettings
 import com.example.standtime.standtime.feature.utils.CustomColorValue
 import com.example.standtime.standtime.feature.utils.PomodoroPhase
+import com.example.standtime.standtime.feature.utils.PomodoroStateStore
 import com.example.standtime.standtime.feature.utils.SavedCustomClockStyle
 import com.example.standtime.standtime.feature.utils.StandTimeIntent
 import com.example.standtime.standtime.feature.utils.StandTimeLanguage
 import com.example.standtime.standtime.feature.utils.StandTimeMediaService
 import com.example.standtime.standtime.feature.utils.StandTimeUiState
 import com.example.standtime.standtime.feature.utils.ThemeMode
+import com.example.standtime.PomodoroNotificationHelper
 import java.io.BufferedReader
 import java.net.HttpURLConnection
 import java.net.URL
@@ -65,9 +67,15 @@ class StandTimeViewModel(
 
     private val prefs = application.getSharedPreferences("stand_time_prefs", Context.MODE_PRIVATE)
     private val initialBatterySnapshot = readBatterySnapshot()
+    private val initialPomodoroState = PomodoroStateStore.synchronize(
+        state = PomodoroStateStore.load(prefs, StandTimeUiState().pomodoroPresets),
+        presets = StandTimeUiState().pomodoroPresets,
+        nowMillis = System.currentTimeMillis()
+    )
 
     private val _uiState = MutableStateFlow(
-        StandTimeUiState(
+        PomodoroStateStore.toUiState(
+            base = StandTimeUiState(
             locationPermissionGranted = hasLocationPermission(),
             selectedGalleryStyleIndex = prefs.getInt(KEY_GALLERY_INDEX, 0),
             language = prefs.getString(KEY_LANGUAGE, null)?.toStandTimeLanguage()
@@ -79,11 +87,15 @@ class StandTimeViewModel(
             enableTapRevealInfo = prefs.getBoolean(KEY_ENABLE_TAP_REVEAL_INFO, true),
             customClockStyle = loadCustomClockStyle(),
             savedCustomClockStyles = loadSavedCustomClockStyles()
+            ),
+            state = initialPomodoroState
         )
     )
     val uiState: StateFlow<StandTimeUiState> = _uiState.asStateFlow()
 
     init {
+        PomodoroStateStore.save(prefs, initialPomodoroState)
+        PomodoroStateStore.scheduleAlarm(getApplication(), initialPomodoroState)
         startClock()
         startPomodoroTicker()
         if (_uiState.value.locationPermissionGranted) {
@@ -174,45 +186,36 @@ class StandTimeViewModel(
 
             StandTimeIntent.RefreshWeather -> refreshWeather()
 
-            is StandTimeIntent.SelectPomodoroPreset -> _uiState.update { state ->
-                state.copy(
-                    selectedPomodoroMinutes = intent.minutes,
-                    pomodoroPhase = PomodoroPhase.FOCUS,
-                    pomodoroCompletedFocusSessions = 0,
-                    pomodoroRemainingSeconds = pomodoroDurationSeconds(intent.minutes, state.pomodoroPresets, PomodoroPhase.FOCUS),
-                    isPomodoroRunning = false
+            is StandTimeIntent.SelectPomodoroPreset -> {
+                updatePomodoroState {
+                    PomodoroStateStore.selectPreset(_uiState.value.pomodoroPresets, intent.minutes)
+                }
+            }
+
+            is StandTimeIntent.SetPomodoroPhase -> {
+                updatePomodoroState { state ->
+                    PomodoroStateStore.selectViewedPhase(state, intent.phase)
+                }
+            }
+
+            StandTimeIntent.TogglePomodoroTimer -> updatePomodoroState { state ->
+                PomodoroStateStore.toggleForViewedPhase(
+                    state = state,
+                    presets = _uiState.value.pomodoroPresets,
+                    nowMillis = System.currentTimeMillis()
                 )
             }
 
-            is StandTimeIntent.SetPomodoroPhase -> _uiState.update { state ->
-                state.copy(
-                    pomodoroPhase = intent.phase,
-                    pomodoroRemainingSeconds = pomodoroDurationSeconds(
-                        state.selectedPomodoroMinutes,
-                        state.pomodoroPresets,
-                        intent.phase
-                    ),
-                    isPomodoroRunning = false
+            StandTimeIntent.ResetPomodoro -> updatePomodoroState { state ->
+                PomodoroStateStore.resetViewedPhase(state, _uiState.value.pomodoroPresets)
+            }
+
+            StandTimeIntent.SkipPomodoroPhase -> updatePomodoroState { state ->
+                PomodoroStateStore.skipViewedPhase(
+                    state = state,
+                    presets = _uiState.value.pomodoroPresets,
+                    nowMillis = System.currentTimeMillis()
                 )
-            }
-
-            StandTimeIntent.TogglePomodoroTimer -> _uiState.update { state ->
-                state.copy(isPomodoroRunning = !state.isPomodoroRunning)
-            }
-
-            StandTimeIntent.ResetPomodoro -> _uiState.update { state ->
-                state.copy(
-                    pomodoroRemainingSeconds = pomodoroDurationSeconds(
-                        state.selectedPomodoroMinutes,
-                        state.pomodoroPresets,
-                        state.pomodoroPhase
-                    ),
-                    isPomodoroRunning = false
-                )
-            }
-
-            StandTimeIntent.SkipPomodoroPhase -> _uiState.update { state ->
-                advancePomodoroState(state, keepRunning = false)
             }
 
             StandTimeIntent.ToggleMediaPlayback -> StandTimeMediaService.togglePlayback()
@@ -428,6 +431,26 @@ class StandTimeViewModel(
         }
     }
 
+    private fun updatePomodoroState(
+        transform: (com.example.standtime.standtime.feature.utils.PomodoroSavedState) -> com.example.standtime.standtime.feature.utils.PomodoroSavedState
+    ) {
+        val current = PomodoroStateStore.synchronize(
+            state = PomodoroStateStore.fromUiState(_uiState.value),
+            presets = _uiState.value.pomodoroPresets,
+            nowMillis = System.currentTimeMillis()
+        )
+        val updated = transform(current)
+        _uiState.update { state -> PomodoroStateStore.toUiState(state, updated) }
+        persistPomodoroState(updated)
+    }
+
+    private fun persistPomodoroState(
+        state: com.example.standtime.standtime.feature.utils.PomodoroSavedState
+    ) {
+        PomodoroStateStore.save(prefs, state)
+        PomodoroStateStore.scheduleAlarm(getApplication(), state)
+    }
+
     private fun saveCustomClockStyle() {
         val custom = _uiState.value.customClockStyle
         val json = JSONObject().apply {
@@ -628,64 +651,63 @@ class StandTimeViewModel(
         viewModelScope.launch {
             while (true) {
                 delay(1_000)
+                if (!com.example.standtime.AppVisibilityTracker.isAppVisible) {
+                    continue
+                }
+
+                val nowMillis = System.currentTimeMillis()
+                var updatedPomodoroState: com.example.standtime.standtime.feature.utils.PomodoroSavedState? =
+                    null
+                var completedPhase: PomodoroPhase? = null
+                var nextPhase: PomodoroPhase? = null
+
                 _uiState.update { state ->
-                    if (!state.isPomodoroRunning) {
-                        state
-                    } else if (state.pomodoroRemainingSeconds <= 1) {
-                        advancePomodoroState(state, keepRunning = true)
+                    val current = PomodoroStateStore.synchronize(
+                        state = PomodoroStateStore.load(prefs, state.pomodoroPresets),
+                        presets = state.pomodoroPresets,
+                        nowMillis = nowMillis
+                    )
+                    if (!current.isRunning) {
+                        updatedPomodoroState = current
+                        PomodoroStateStore.toUiState(state, current)
+                    } else if (
+                        current.activePhase != null &&
+                        current.endsAtMillis != null &&
+                        current.endsAtMillis <= nowMillis
+                    ) {
+                        completedPhase = current.activePhase
+                        val advanced = PomodoroStateStore.advance(
+                            state = current,
+                            presets = state.pomodoroPresets,
+                            keepRunning = true,
+                            completedAtMillis = current.endsAtMillis,
+                            sourcePhase = current.activePhase
+                        )
+                        nextPhase = advanced.activePhase
+                        updatedPomodoroState = advanced
+                        PomodoroStateStore.toUiState(state, advanced)
                     } else {
-                        state.copy(pomodoroRemainingSeconds = state.pomodoroRemainingSeconds - 1)
+                        val synced = PomodoroStateStore.synchronize(
+                            state = current,
+                            presets = state.pomodoroPresets,
+                            nowMillis = nowMillis
+                        )
+                        updatedPomodoroState = synced
+                        PomodoroStateStore.toUiState(state, synced)
+                    }
+                }
+
+                updatedPomodoroState?.let { pomodoroState ->
+                    if (completedPhase != null) {
+                        persistPomodoroState(pomodoroState)
+                        PomodoroNotificationHelper.notifyPhaseComplete(
+                            context = getApplication(),
+                            finishedPhase = completedPhase ?: PomodoroPhase.FOCUS,
+                            nextPhase = nextPhase ?: pomodoroState.activePhase ?: PomodoroPhase.FOCUS
+                        )
                     }
                 }
             }
-        }
-    }
-
-    private fun advancePomodoroState(
-        state: StandTimeUiState,
-        keepRunning: Boolean
-    ): StandTimeUiState {
-        val nextPhase = when (state.pomodoroPhase) {
-            PomodoroPhase.FOCUS -> {
-                if ((state.pomodoroCompletedFocusSessions + 1) % 4 == 0) {
-                    PomodoroPhase.LONG_BREAK
-                } else {
-                    PomodoroPhase.SHORT_BREAK
-                }
-            }
-
-            PomodoroPhase.SHORT_BREAK,
-            PomodoroPhase.LONG_BREAK -> PomodoroPhase.FOCUS
-        }
-
-        val nextCompletedFocusSessions = when (state.pomodoroPhase) {
-            PomodoroPhase.FOCUS -> state.pomodoroCompletedFocusSessions + 1
-            PomodoroPhase.LONG_BREAK -> 0
-            PomodoroPhase.SHORT_BREAK -> state.pomodoroCompletedFocusSessions
-        }
-
-        return state.copy(
-            pomodoroPhase = nextPhase,
-            pomodoroCompletedFocusSessions = nextCompletedFocusSessions,
-            pomodoroRemainingSeconds = pomodoroDurationSeconds(
-                selectedMinutes = state.selectedPomodoroMinutes,
-                presets = state.pomodoroPresets,
-                phase = nextPhase
-            ),
-            isPomodoroRunning = keepRunning
-        )
-    }
-
-    private fun pomodoroDurationSeconds(
-        selectedMinutes: Int,
-        presets: List<com.example.standtime.standtime.feature.utils.PomodoroPreset>,
-        phase: PomodoroPhase
-    ): Int {
-        val preset = presets.firstOrNull { it.focusMinutes == selectedMinutes } ?: presets.first()
-        return when (phase) {
-            PomodoroPhase.FOCUS -> preset.focusMinutes * 60
-            PomodoroPhase.SHORT_BREAK -> preset.shortBreakMinutes * 60
-            PomodoroPhase.LONG_BREAK -> preset.longBreakMinutes * 60
         }
     }
 
