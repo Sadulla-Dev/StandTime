@@ -2,6 +2,7 @@ package com.example.standtime.standtime.feature.utils
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.pm.PackageManager
 import android.media.session.MediaController
 import android.media.session.MediaSessionManager
 import android.media.session.PlaybackState
@@ -60,10 +61,23 @@ class StandTimeMediaService : NotificationListenerService() {
                 permissionGranted = permissionGranted,
                 sessionAvailable = permissionGranted && controller != null,
                 appName = controller?.packageName.orEmpty(),
+                appLabel = controller?.packageName?.let { resolveAppLabel(context, it) }.orEmpty(),
                 title = title,
                 subtitle = subtitle,
                 isPlaying = state == PlaybackState.STATE_PLAYING
             )
+        }
+
+        private fun resolveAppLabel(context: Context, packageName: String): String {
+            return runCatching {
+                val packageManager = context.packageManager
+                val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
+                packageManager.getApplicationLabel(applicationInfo).toString()
+            }.getOrElse {
+                packageName.substringAfterLast('.').replaceFirstChar { char ->
+                    if (char.isLowerCase()) char.titlecase() else char.toString()
+                }
+            }
         }
 
         fun togglePlayback() {
@@ -86,6 +100,7 @@ data class MediaSnapshot(
     val permissionGranted: Boolean,
     val sessionAvailable: Boolean,
     val appName: String,
+    val appLabel: String,
     val title: String,
     val subtitle: String,
     val isPlaying: Boolean

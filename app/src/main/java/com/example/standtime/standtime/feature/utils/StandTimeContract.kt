@@ -137,6 +137,7 @@ data class StandTimeUiState(
     val mediaPermissionGranted: Boolean = false,
     val mediaSessionAvailable: Boolean = false,
     val mediaAppName: String = "",
+    val mediaAppLabel: String = "",
     val mediaTitle: String = "",
     val mediaSubtitle: String = "",
     val selectedGalleryStyleIndex: Int = 0,

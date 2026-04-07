@@ -637,6 +637,7 @@ class StandTimeViewModel(
                         mediaPermissionGranted = mediaSnapshot.permissionGranted,
                         mediaSessionAvailable = mediaSnapshot.sessionAvailable,
                         mediaAppName = mediaSnapshot.appName,
+                        mediaAppLabel = mediaSnapshot.appLabel,
                         mediaTitle = mediaSnapshot.title,
                         mediaSubtitle = mediaSnapshot.subtitle,
                         isMediaPlaying = mediaSnapshot.isPlaying

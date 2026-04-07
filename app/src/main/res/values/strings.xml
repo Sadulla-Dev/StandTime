@@ -45,6 +45,7 @@
     <string name="media_permission_body">Enable notification access so the app can find the current player.</string>
     <string name="media_enable_access">Enable access</string>
     <string name="media_unavailable">No active media session right now.</string>
+    <string name="media_now_playing_fallback">Now playing</string>
     <string name="media_play">Play</string>
     <string name="media_pause">Pause</string>
     <string name="media_next">Next</string>

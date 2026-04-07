@@ -45,6 +45,7 @@
     <string name="media_permission_body">Включите доступ к уведомлениям, чтобы приложение нашло текущий плеер.</string>
     <string name="media_enable_access">Включить доступ</string>
     <string name="media_unavailable">Сейчас нет активной медиа-сессии.</string>
+    <string name="media_now_playing_fallback">Сейчас играет</string>
     <string name="media_play">Воспроизвести</string>
     <string name="media_pause">Пауза</string>
     <string name="media_next">Следующий</string>

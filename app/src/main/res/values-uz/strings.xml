@@ -45,6 +45,7 @@
     <string name="media_permission_body">Joriy playerni topish uchun notification access yoqing.</string>
     <string name="media_enable_access">Ruxsatni yoqish</string>
     <string name="media_unavailable">Hozir aktiv media sessiya topilmadi.</string>
+    <string name="media_now_playing_fallback">Hozir tinglanmoqda</string>
     <string name="media_play">Play</string>
     <string name="media_pause">Pause</string>
     <string name="media_next">Keyingi</string>

@@ -40,6 +40,8 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -66,9 +68,15 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.GraphicEq
+import androidx.compose.material.icons.rounded.Pause
+import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.SkipNext
 import com.example.standtime.R
 import com.example.standtime.standtime.feature.CustomClockStudioPage
 import com.example.standtime.standtime.feature.components.GalleryClockContent
@@ -411,6 +419,13 @@ private fun ClockStylesPage(
                         )
                     )
                 }
+                if (state.mediaSessionAvailable) {
+                    GalleryMediaChip(
+                        state = state,
+                        language = language,
+                        onIntent = onIntent
+                    )
+                }
             }
         }
 
@@ -473,6 +488,90 @@ private fun GalleryInfoChip(text: String) {
         letterSpacing = 0.4.sp,
         color = GalleryOverlayContentColor
     )
+}
+
+@Composable
+private fun GalleryMediaChip(
+    state: StandTimeUiState,
+    language: StandTimeLanguage,
+    onIntent: (StandTimeIntent) -> Unit
+) {
+    val title = state.mediaTitle.ifBlank {
+        localizedStringResource(R.string.media_now_playing_fallback, language)
+    }
+    val subtitle = state.mediaSubtitle.ifBlank {
+        state.mediaAppLabel.ifBlank { state.mediaAppName }
+    }
+    Row(
+        modifier = Modifier
+            .galleryOverlaySurface(RoundedCornerShape(999.dp))
+            .padding(start = 12.dp, end = 6.dp, top = 6.dp, bottom = 6.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(28.dp)
+                .clip(CircleShape)
+                .background(Color.White.copy(alpha = 0.10f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.GraphicEq,
+                contentDescription = null,
+                tint = GalleryOverlayContentColor,
+                modifier = Modifier.size(16.dp)
+            )
+        }
+        Column(
+            modifier = Modifier.width(148.dp),
+            verticalArrangement = Arrangement.spacedBy(1.dp)
+        ) {
+            Text(
+                text = title,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontFamily = FontFamily.Monospace,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 10.sp,
+                color = GalleryOverlayContentColor
+            )
+            Text(
+                text = subtitle,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontFamily = FontFamily.Monospace,
+                fontWeight = FontWeight.Medium,
+                fontSize = 9.sp,
+                color = GalleryOverlayContentColor.copy(alpha = 0.72f)
+            )
+        }
+        IconButton(
+            onClick = { onIntent(StandTimeIntent.ToggleMediaPlayback) },
+            modifier = Modifier.size(30.dp)
+        ) {
+            Icon(
+                imageVector = if (state.isMediaPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
+                contentDescription = localizedStringResource(
+                    if (state.isMediaPlaying) R.string.media_pause else R.string.media_play,
+                    language
+                ),
+                tint = GalleryOverlayContentColor,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+        IconButton(
+            onClick = { onIntent(StandTimeIntent.SkipToNextTrack) },
+            modifier = Modifier.size(30.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.SkipNext,
+                contentDescription = localizedStringResource(R.string.media_next, language),
+                tint = GalleryOverlayContentColor,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
 }
 
 private fun Modifier.galleryOverlaySurface(shape: Shape): Modifier = this
@@ -631,8 +730,8 @@ private fun InfoPanelStack(
 ) {
     val pages = buildList<DashboardPanel> {
         if (state.showCalendar) add(DashboardPanel.Calendar)
-        if (state.showWeather) add(DashboardPanel.Weather)
         if (state.showPomodoro) add(DashboardPanel.Pomodoro)
+        if (state.showWeather) add(DashboardPanel.Weather)
         add(DashboardPanel.Media)
     }
     val pagerState = rememberPagerState(pageCount = { pages.size })
@@ -693,11 +792,11 @@ private fun PortraitDashboard(
 
         CalendarCard(state, language, accentColor)
 
-        if (state.showWeather) {
-            WeatherCard(state, language, accentColor, onIntent, onRequestLocationPermission)
-        }
         if (state.showPomodoro) {
             PomodoroCard(state, language, accentColor, onIntent)
+        }
+        if (state.showWeather) {
+            WeatherCard(state, language, accentColor, onIntent, onRequestLocationPermission)
         }
         MediaCard(state, language, accentColor, onIntent)
     }
@@ -1394,7 +1493,7 @@ private fun MediaCard(
         Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
             Text(
                 text = localizedStringResource(R.string.media_title, language),
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurface
             )
             if (!state.mediaPermissionGranted) {
@@ -1418,44 +1517,117 @@ private fun MediaCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             } else {
-                Text(
-                    text = state.mediaTitle.ifBlank {
-                        localizedStringResource(R.string.media_title, language)
-                    }, style = MaterialTheme.typography.titleLarge, color = accentColor
-                )
-                Text(
-                    text = state.mediaSubtitle.ifBlank {
-                        localizedStringResource(
-                            R.string.media_source_value, language, state.mediaAppName
-                        )
-                    },
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = localizedStringResource(
-                        R.string.media_source_value, language, state.mediaAppName
-                    ),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                ChipRow {
-                    FilterChip(
-                        selected = state.isMediaPlaying,
-                        onClick = { onIntent(StandTimeIntent.ToggleMediaPlayback) },
-                        label = {
-                            Text(
-                                if (state.isMediaPlaying) localizedStringResource(
-                                    R.string.media_pause,
-                                    language
-                                )
-                                else localizedStringResource(R.string.media_play, language)
+                Surface(
+                    shape = RoundedCornerShape(26.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(14.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(72.dp)
+                                .clip(RoundedCornerShape(22.dp))
+                                .background(
+                                    Brush.linearGradient(
+                                        colors = listOf(
+                                            accentColor.copy(alpha = 0.95f),
+                                            accentColor.copy(alpha = 0.30f)
+                                        )
+                                    )
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.GraphicEq,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.surface,
+                                modifier = Modifier.size(34.dp)
                             )
-                        })
-                    FilterChip(
-                        selected = false,
+                        }
+
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = state.mediaTitle.ifBlank {
+                                    localizedStringResource(R.string.media_now_playing_fallback, language)
+                                },
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Text(
+                                text = state.mediaSubtitle.ifBlank {
+                                    state.mediaAppLabel.ifBlank { state.mediaAppName }
+                                },
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            CompactInfoPill(
+                                text = localizedStringResource(
+                                    R.string.media_source_value,
+                                    language,
+                                    state.mediaAppLabel.ifBlank { state.mediaAppName }
+                                )
+                            )
+                        }
+                    }
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Button(
+                        onClick = { onIntent(StandTimeIntent.ToggleMediaPlayback) },
+                        modifier = Modifier.weight(1.15f),
+                        shape = RoundedCornerShape(18.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = accentColor,
+                            contentColor = MaterialTheme.colorScheme.surface
+                        )
+                    ) {
+                        Icon(
+                            imageVector = if (state.isMediaPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            if (state.isMediaPlaying) {
+                                localizedStringResource(R.string.media_pause, language)
+                            } else {
+                                localizedStringResource(R.string.media_play, language)
+                            }
+                        )
+                    }
+
+                    Button(
                         onClick = { onIntent(StandTimeIntent.SkipToNextTrack) },
-                        label = { Text(localizedStringResource(R.string.media_next, language)) })
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(18.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.SkipNext,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(localizedStringResource(R.string.media_next, language))
+                    }
                 }
             }
         }
