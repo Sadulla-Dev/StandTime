@@ -1090,32 +1090,32 @@ private fun SettingsCard(
                             language
                         )
                     )
-                    SettingRow(
-                        label = localizedStringResource(R.string.sleep_color_filter_label, language),
-                        checked = state.enableSleepColorFilter,
-                        onCheckedChange = { onIntent(StandTimeIntent.SetSleepColorFilter(it)) },
-                        supportingText = localizedStringResource(
-                            if (ambientLightSensorAvailable) {
-                                R.string.sleep_color_filter_hint
-                            } else {
-                                R.string.auto_dim_night_mode_unavailable
-                            },
-                            language
-                        )
-                    )
-                    SettingRow(
-                        label = localizedStringResource(R.string.wave_to_wake_label, language),
-                        checked = state.enableWaveToWake,
-                        onCheckedChange = { onIntent(StandTimeIntent.SetWaveToWake(it)) },
-                        supportingText = localizedStringResource(
-                            if (proximitySensorAvailable) {
-                                R.string.wave_to_wake_hint
-                            } else {
-                                R.string.wave_to_wake_unavailable
-                            },
-                            language
-                        )
-                    )
+//                    SettingRow(
+//                        label = localizedStringResource(R.string.sleep_color_filter_label, language),
+//                        checked = state.enableSleepColorFilter,
+//                        onCheckedChange = { onIntent(StandTimeIntent.SetSleepColorFilter(it)) },
+//                        supportingText = localizedStringResource(
+//                            if (ambientLightSensorAvailable) {
+//                                R.string.sleep_color_filter_hint
+//                            } else {
+//                                R.string.auto_dim_night_mode_unavailable
+//                            },
+//                            language
+//                        )
+//                    )
+//                    SettingRow(
+//                        label = localizedStringResource(R.string.wave_to_wake_label, language),
+//                        checked = state.enableWaveToWake,
+//                        onCheckedChange = { onIntent(StandTimeIntent.SetWaveToWake(it)) },
+//                        supportingText = localizedStringResource(
+//                            if (proximitySensorAvailable) {
+//                                R.string.wave_to_wake_hint
+//                            } else {
+//                                R.string.wave_to_wake_unavailable
+//                            },
+//                            language
+//                        )
+//                    )
                 }
             }
 
