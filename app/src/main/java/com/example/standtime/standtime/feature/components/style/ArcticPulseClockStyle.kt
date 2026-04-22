@@ -1,4 +1,4 @@
-package com.example.standtime.standtime.feature.components.style
+package com.standtime.clock.standtime.feature.components.style
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -19,8 +19,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import com.example.standtime.standtime.feature.components.GalleryClockParts
-import com.example.standtime.standtime.feature.utils.StandTimeLanguage
+import com.standtime.clock.standtime.feature.components.GalleryClockParts
+import com.standtime.clock.standtime.feature.utils.StandTimeLanguage
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin

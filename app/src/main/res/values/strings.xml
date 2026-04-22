@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Stand Time</string>
+    <string name="app_name">Desk Clock</string>
     <string name="charging_label">Charging mode</string>
     <string name="battery_label">Battery</string>
     <string name="battery_idle_label">Power unplugged</string>

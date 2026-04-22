@@ -1,4 +1,4 @@
-package com.example.standtime.standtime.feature
+package com.standtime.clock.standtime.feature
 
 import android.graphics.Color as AndroidColor
 import androidx.compose.foundation.background
@@ -62,17 +62,17 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.standtime.R
-import com.example.standtime.standtime.feature.components.galleryParts
-import com.example.standtime.standtime.feature.components.style.CustomClockStyle
-import com.example.standtime.standtime.feature.utils.CustomClockFont
-import com.example.standtime.standtime.feature.utils.CustomClockLayout
-import com.example.standtime.standtime.feature.utils.CustomColorValue
-import com.example.standtime.standtime.feature.utils.StandTimeIntent
-import com.example.standtime.standtime.feature.utils.StandTimeLanguage
-import com.example.standtime.standtime.feature.utils.StandTimeUiState
-import com.example.standtime.standtime.feature.utils.localizedStringResource
-import com.example.standtime.ui.theme.StandTimeFontFamilies
+import com.standtime.clock.R
+import com.standtime.clock.standtime.feature.components.galleryParts
+import com.standtime.clock.standtime.feature.components.style.CustomClockStyle
+import com.standtime.clock.standtime.feature.utils.CustomClockFont
+import com.standtime.clock.standtime.feature.utils.CustomClockLayout
+import com.standtime.clock.standtime.feature.utils.CustomColorValue
+import com.standtime.clock.standtime.feature.utils.StandTimeIntent
+import com.standtime.clock.standtime.feature.utils.StandTimeLanguage
+import com.standtime.clock.standtime.feature.utils.StandTimeUiState
+import com.standtime.clock.standtime.feature.utils.localizedStringResource
+import com.standtime.clock.ui.theme.StandTimeFontFamilies
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
@@ -255,7 +255,7 @@ private fun StudioPreviewCard(
 
 @Composable
 private fun StudioControlsCard(
-    custom: com.example.standtime.standtime.feature.utils.CustomClockStyleSettings,
+    custom: com.standtime.clock.standtime.feature.utils.CustomClockStyleSettings,
     language: StandTimeLanguage,
     accentColor: Color,
     onIntent: (StandTimeIntent) -> Unit,
@@ -579,7 +579,7 @@ private fun StudioControlsCard(
 
 @Composable
 private fun FontCarousel(
-    custom: com.example.standtime.standtime.feature.utils.CustomClockStyleSettings,
+    custom: com.standtime.clock.standtime.feature.utils.CustomClockStyleSettings,
     language: StandTimeLanguage,
     onIntent: (StandTimeIntent) -> Unit
 ) {
@@ -1061,8 +1061,8 @@ private fun Color.toCustomColorValue(): CustomColorValue {
 
 @Composable
 private fun PhonePreviewCanvas(
-    parts: com.example.standtime.standtime.feature.components.GalleryClockParts,
-    custom: com.example.standtime.standtime.feature.utils.CustomClockStyleSettings,
+    parts: com.standtime.clock.standtime.feature.components.GalleryClockParts,
+    custom: com.standtime.clock.standtime.feature.utils.CustomClockStyleSettings,
     onIntent: (StandTimeIntent) -> Unit
 ) {
     var previewScale by remember(custom.scale) { mutableFloatStateOf(custom.scale) }

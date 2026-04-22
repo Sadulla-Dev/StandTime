@@ -1,4 +1,4 @@
-package com.example.standtime
+package com.standtime.clock
 
 import org.junit.Test
 

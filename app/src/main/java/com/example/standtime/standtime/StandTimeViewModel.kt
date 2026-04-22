@@ -1,4 +1,4 @@
-package com.example.standtime.standtime
+package com.standtime.clock.standtime
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -15,21 +15,21 @@ import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.standtime.standtime.feature.components.galleryStyles
-import com.example.standtime.standtime.feature.utils.CalendarDayCell
-import com.example.standtime.standtime.feature.utils.CustomClockLayout
-import com.example.standtime.standtime.feature.utils.CustomClockFont
-import com.example.standtime.standtime.feature.utils.CustomClockStyleSettings
-import com.example.standtime.standtime.feature.utils.CustomColorValue
-import com.example.standtime.standtime.feature.utils.PomodoroPhase
-import com.example.standtime.standtime.feature.utils.PomodoroStateStore
-import com.example.standtime.standtime.feature.utils.SavedCustomClockStyle
-import com.example.standtime.standtime.feature.utils.StandTimeIntent
-import com.example.standtime.standtime.feature.utils.StandTimeLanguage
-import com.example.standtime.standtime.feature.utils.StandTimeMediaService
-import com.example.standtime.standtime.feature.utils.StandTimeUiState
-import com.example.standtime.standtime.feature.utils.ThemeMode
-import com.example.standtime.PomodoroNotificationHelper
+import com.standtime.clock.standtime.feature.components.galleryStyles
+import com.standtime.clock.standtime.feature.utils.CalendarDayCell
+import com.standtime.clock.standtime.feature.utils.CustomClockLayout
+import com.standtime.clock.standtime.feature.utils.CustomClockFont
+import com.standtime.clock.standtime.feature.utils.CustomClockStyleSettings
+import com.standtime.clock.standtime.feature.utils.CustomColorValue
+import com.standtime.clock.standtime.feature.utils.PomodoroPhase
+import com.standtime.clock.standtime.feature.utils.PomodoroStateStore
+import com.standtime.clock.standtime.feature.utils.SavedCustomClockStyle
+import com.standtime.clock.standtime.feature.utils.StandTimeIntent
+import com.standtime.clock.standtime.feature.utils.StandTimeLanguage
+import com.standtime.clock.standtime.feature.utils.StandTimeMediaService
+import com.standtime.clock.standtime.feature.utils.StandTimeUiState
+import com.standtime.clock.standtime.feature.utils.ThemeMode
+import com.standtime.clock.PomodoroNotificationHelper
 import java.io.BufferedReader
 import java.net.HttpURLConnection
 import java.net.URL
@@ -453,7 +453,7 @@ class StandTimeViewModel(
     }
 
     private fun updatePomodoroState(
-        transform: (com.example.standtime.standtime.feature.utils.PomodoroSavedState) -> com.example.standtime.standtime.feature.utils.PomodoroSavedState
+        transform: (com.standtime.clock.standtime.feature.utils.PomodoroSavedState) -> com.standtime.clock.standtime.feature.utils.PomodoroSavedState
     ) {
         val current = PomodoroStateStore.synchronize(
             state = PomodoroStateStore.fromUiState(_uiState.value),
@@ -466,7 +466,7 @@ class StandTimeViewModel(
     }
 
     private fun persistPomodoroState(
-        state: com.example.standtime.standtime.feature.utils.PomodoroSavedState
+        state: com.standtime.clock.standtime.feature.utils.PomodoroSavedState
     ) {
         PomodoroStateStore.save(prefs, state)
         PomodoroStateStore.scheduleAlarm(getApplication(), state)
@@ -673,12 +673,12 @@ class StandTimeViewModel(
         viewModelScope.launch {
             while (true) {
                 delay(1_000)
-                if (!com.example.standtime.AppVisibilityTracker.isAppVisible) {
+                if (!com.standtime.clock.AppVisibilityTracker.isAppVisible) {
                     continue
                 }
 
                 val nowMillis = System.currentTimeMillis()
-                var updatedPomodoroState: com.example.standtime.standtime.feature.utils.PomodoroSavedState? =
+                var updatedPomodoroState: com.standtime.clock.standtime.feature.utils.PomodoroSavedState? =
                     null
                 var completedPhase: PomodoroPhase? = null
                 var nextPhase: PomodoroPhase? = null

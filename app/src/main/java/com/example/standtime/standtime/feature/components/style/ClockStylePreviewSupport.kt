@@ -1,16 +1,16 @@
-package com.example.standtime.standtime.feature.components.style
+package com.standtime.clock.standtime.feature.components.style
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.standtime.standtime.feature.components.GalleryClockParts
-import com.example.standtime.standtime.feature.utils.CustomClockFont
-import com.example.standtime.standtime.feature.utils.CustomClockLayout
-import com.example.standtime.standtime.feature.utils.CustomClockStyleSettings
-import com.example.standtime.standtime.feature.utils.CustomColorValue
-import com.example.standtime.ui.theme.StandTimeTheme
+import com.standtime.clock.standtime.feature.components.GalleryClockParts
+import com.standtime.clock.standtime.feature.utils.CustomClockFont
+import com.standtime.clock.standtime.feature.utils.CustomClockLayout
+import com.standtime.clock.standtime.feature.utils.CustomClockStyleSettings
+import com.standtime.clock.standtime.feature.utils.CustomColorValue
+import com.standtime.clock.ui.theme.StandTimeTheme
 
 internal val ClockStylePreviewParts = GalleryClockParts(
     hours = "18",

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.standtime.standtime.feature
+package com.standtime.clock.standtime.feature
 
 import android.app.Activity
 import android.graphics.RenderEffect
@@ -85,9 +85,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import androidx.core.view.WindowCompat
-import com.example.standtime.R
-import com.example.standtime.standtime.feature.utils.StandTimeLanguage
-import com.example.standtime.standtime.feature.utils.localizedStringResource
+import com.standtime.clock.R
+import com.standtime.clock.standtime.feature.utils.StandTimeLanguage
+import com.standtime.clock.standtime.feature.utils.localizedStringResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

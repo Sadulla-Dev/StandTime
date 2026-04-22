@@ -1,8 +1,8 @@
-package com.example.standtime.standtime.feature.components
+package com.standtime.clock.standtime.feature.components
 
 import androidx.annotation.StringRes
-import com.example.standtime.R
-import com.example.standtime.standtime.feature.utils.SavedCustomClockStyle
+import com.standtime.clock.R
+import com.standtime.clock.standtime.feature.utils.SavedCustomClockStyle
 
 data class GalleryStyleEntry(
     @param:StringRes val nameRes: Int? = null,

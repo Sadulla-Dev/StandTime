@@ -1,11 +1,11 @@
-package com.example.standtime
+package com.standtime.clock
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.example.standtime.standtime.feature.utils.PomodoroStateStore
-import com.example.standtime.standtime.feature.utils.PomodoroPhase
-import com.example.standtime.standtime.feature.utils.PomodoroPreset
+import com.standtime.clock.standtime.feature.utils.PomodoroStateStore
+import com.standtime.clock.standtime.feature.utils.PomodoroPhase
+import com.standtime.clock.standtime.feature.utils.PomodoroPreset
 
 class PomodoroAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {

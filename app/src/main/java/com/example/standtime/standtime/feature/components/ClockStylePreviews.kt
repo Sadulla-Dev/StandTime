@@ -1,4 +1,4 @@
-package com.example.standtime.standtime.feature.components
+package com.standtime.clock.standtime.feature.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -6,13 +6,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.standtime.standtime.feature.components.GalleryClockParts
-import com.example.standtime.standtime.feature.utils.CustomClockFont
-import com.example.standtime.standtime.feature.utils.CustomClockLayout
-import com.example.standtime.standtime.feature.utils.CustomClockStyleSettings
-import com.example.standtime.standtime.feature.utils.CustomColorValue
-import com.example.standtime.standtime.feature.utils.StandTimeLanguage
-import com.example.standtime.ui.theme.StandTimeTheme
+import com.standtime.clock.standtime.feature.components.GalleryClockParts
+import com.standtime.clock.standtime.feature.utils.CustomClockFont
+import com.standtime.clock.standtime.feature.utils.CustomClockLayout
+import com.standtime.clock.standtime.feature.utils.CustomClockStyleSettings
+import com.standtime.clock.standtime.feature.utils.CustomColorValue
+import com.standtime.clock.standtime.feature.utils.StandTimeLanguage
+import com.standtime.clock.ui.theme.StandTimeTheme
 
 @Preview(
     showBackground = true,
@@ -65,7 +65,7 @@ private fun ClockPreview(content: @Composable (Modifier) -> Unit) {
 @ClockLandscapePreview
 @Composable
 private fun NothingOfficialClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.NothingOfficialClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.NothingOfficialClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -76,7 +76,7 @@ private fun NothingOfficialClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun NothingDotClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.NothingDotClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.NothingDotClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -87,7 +87,7 @@ private fun NothingDotClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun NasaClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.NasaClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.NasaClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -98,7 +98,7 @@ private fun NasaClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun PixelStackClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.PixelStackClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.PixelStackClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -109,7 +109,7 @@ private fun PixelStackClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun TokyoClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.TokyoClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.TokyoClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -120,7 +120,7 @@ private fun TokyoClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun BraunClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.BraunClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.BraunClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -131,7 +131,7 @@ private fun BraunClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun CyberpunkClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.CyberpunkClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.CyberpunkClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -142,7 +142,7 @@ private fun CyberpunkClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun PixelPetClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.PixelPetClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.PixelPetClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -153,7 +153,7 @@ private fun PixelPetClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun LofiClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.LofiClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.LofiClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -164,7 +164,7 @@ private fun LofiClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun RolexClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.RolexClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.RolexClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -175,7 +175,7 @@ private fun RolexClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun AnalogZenClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.AnalogZenClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.AnalogZenClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -186,7 +186,7 @@ private fun AnalogZenClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun TeslaClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.TeslaClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.TeslaClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -197,7 +197,7 @@ private fun TeslaClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun GlassClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.GlassClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.GlassClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -208,7 +208,7 @@ private fun GlassClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun LuxuryClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.LuxuryClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.LuxuryClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -219,7 +219,7 @@ private fun LuxuryClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun BauhausClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.BauhausClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.BauhausClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -230,7 +230,7 @@ private fun BauhausClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun MacOsClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.MacOsClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.MacOsClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -241,7 +241,7 @@ private fun MacOsClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun WordsClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.WordsClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.WordsClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -252,7 +252,7 @@ private fun WordsClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun CoffeeClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.CoffeeClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.CoffeeClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -263,7 +263,7 @@ private fun CoffeeClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun RetroFlipClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.RetroFlipClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.RetroFlipClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -274,7 +274,7 @@ private fun RetroFlipClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun BinaryPulseClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.BinaryPulseClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.BinaryPulseClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -285,7 +285,7 @@ private fun BinaryPulseClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun SolarOrbitClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.SolarOrbitClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.SolarOrbitClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -296,7 +296,7 @@ private fun SolarOrbitClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun TypewriterClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.TypewriterClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.TypewriterClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -307,7 +307,7 @@ private fun TypewriterClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun AdminPanelClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.AdminPanelClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.AdminPanelClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -318,7 +318,7 @@ private fun AdminPanelClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun SynthwaveClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.SynthwaveClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.SynthwaveClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -329,7 +329,7 @@ private fun SynthwaveClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun ZenArchitectureClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.ZenArchitectureClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.ZenArchitectureClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -340,7 +340,7 @@ private fun ZenArchitectureClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun ArchitectStudioClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.ArchitectStudioClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.ArchitectStudioClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -351,7 +351,7 @@ private fun ArchitectStudioClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun OledStealthClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.OledStealthClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.OledStealthClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -362,7 +362,7 @@ private fun OledStealthClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun SwissClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.SwissClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.SwissClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -373,7 +373,7 @@ private fun SwissClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun IndustrialClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.IndustrialClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.IndustrialClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -384,7 +384,7 @@ private fun IndustrialClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun FrostedStudioClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.FrostedStudioClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.FrostedStudioClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -395,7 +395,7 @@ private fun FrostedStudioClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun TokyoNeonClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.TokyoNeonClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.TokyoNeonClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -406,7 +406,7 @@ private fun TokyoNeonClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun PaperMinimalismClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.PaperMinimalismClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.PaperMinimalismClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -417,7 +417,7 @@ private fun PaperMinimalismClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun CyberGlitchClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.CyberGlitchClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.CyberGlitchClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -428,7 +428,7 @@ private fun CyberGlitchClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun AbstractGeometricClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.AbstractGeometricClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.AbstractGeometricClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -439,7 +439,7 @@ private fun AbstractGeometricClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun TypographyFocusClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.TypographyFocusClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.TypographyFocusClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -450,7 +450,7 @@ private fun TypographyFocusClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun ContrastSplitClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.ContrastSplitClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.ContrastSplitClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -461,7 +461,7 @@ private fun ContrastSplitClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun Ps5ClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.Ps5ClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.Ps5ClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -472,7 +472,7 @@ private fun Ps5ClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun AuraPulseClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.AuraPulseClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.AuraPulseClockStyle(
         previewParts,
         StandTimeLanguage.ENGLISH,
         previewAccent,
@@ -483,7 +483,7 @@ private fun AuraPulseClockStylePreview() = ClockPreview {
 @ClockLandscapePreview
 @Composable
 private fun CustomClockStylePreview() = ClockPreview {
-    _root_ide_package_.com.example.standtime.standtime.feature.components.style.CustomClockStyle(
+    _root_ide_package_.com.standtime.clock.standtime.feature.components.style.CustomClockStyle(
         parts = previewParts,
         custom = previewCustomStyle,
         modifier = it

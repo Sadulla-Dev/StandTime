@@ -1,4 +1,4 @@
-package com.example.standtime.standtime.feature.utils
+package com.standtime.clock.standtime.feature.utils
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
-import com.example.standtime.PomodoroAlarmReceiver
+import com.standtime.clock.PomodoroAlarmReceiver
 import org.json.JSONObject
 
 data class PomodoroSavedState(

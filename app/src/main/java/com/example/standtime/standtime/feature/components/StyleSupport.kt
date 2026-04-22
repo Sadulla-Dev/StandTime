@@ -1,4 +1,4 @@
-package com.example.standtime.standtime.feature.components
+package com.standtime.clock.standtime.feature.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.Text
-import com.example.standtime.standtime.feature.utils.StandTimeUiState
+import com.standtime.clock.standtime.feature.utils.StandTimeUiState
 import kotlin.math.min
 
 val LocalGalleryScaleFactor = staticCompositionLocalOf { 1f }

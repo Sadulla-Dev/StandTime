@@ -1,4 +1,4 @@
-package com.example.standtime
+package com.standtime.clock
 
 import android.Manifest
 import android.app.NotificationChannel
@@ -15,7 +15,7 @@ import android.os.VibratorManager
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import com.example.standtime.standtime.feature.utils.PomodoroPhase
+import com.standtime.clock.standtime.feature.utils.PomodoroPhase
 
 object PomodoroNotificationHelper {
     const val CHANNEL_ID = "pomodoro_alerts"

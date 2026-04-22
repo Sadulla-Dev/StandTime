@@ -1,4 +1,4 @@
-package com.example.standtime.standtime.feature.components.style
+package com.standtime.clock.standtime.feature.components.style
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -17,10 +17,10 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.standtime.R
-import com.example.standtime.standtime.feature.components.GalleryClockParts
-import com.example.standtime.standtime.feature.utils.StandTimeLanguage
-import com.example.standtime.standtime.feature.utils.localizedStringResource
+import com.standtime.clock.R
+import com.standtime.clock.standtime.feature.components.GalleryClockParts
+import com.standtime.clock.standtime.feature.utils.StandTimeLanguage
+import com.standtime.clock.standtime.feature.utils.localizedStringResource
 
 @Composable
 fun WordsClockStyle(

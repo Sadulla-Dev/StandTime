@@ -1,13 +1,13 @@
-package com.example.standtime.standtime.feature.components
+package com.standtime.clock.standtime.feature.components
 
 import androidx.compose.ui.graphics.Color
-import com.example.standtime.standtime.feature.utils.AccentPalette
-import com.example.standtime.standtime.feature.utils.PomodoroPhase
-import com.example.standtime.standtime.feature.utils.PomodoroPreset
-import com.example.standtime.standtime.feature.utils.StandTimeUiState
-import com.example.standtime.ui.theme.CoralAccent
-import com.example.standtime.ui.theme.LimeAccent
-import com.example.standtime.ui.theme.SkyAccent
+import com.standtime.clock.standtime.feature.utils.AccentPalette
+import com.standtime.clock.standtime.feature.utils.PomodoroPhase
+import com.standtime.clock.standtime.feature.utils.PomodoroPreset
+import com.standtime.clock.standtime.feature.utils.StandTimeUiState
+import com.standtime.clock.ui.theme.CoralAccent
+import com.standtime.clock.ui.theme.LimeAccent
+import com.standtime.clock.ui.theme.SkyAccent
 
 internal fun StandTimeUiState.remainingPomodoroText(): String {
     val totalSeconds = pomodoroRemainingForViewedPhase()

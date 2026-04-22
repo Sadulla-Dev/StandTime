@@ -1,4 +1,4 @@
-package com.example.standtime.standtime.feature.utils
+package com.standtime.clock.standtime.feature.utils
 
 enum class ThemeMode {
     LIGHT,

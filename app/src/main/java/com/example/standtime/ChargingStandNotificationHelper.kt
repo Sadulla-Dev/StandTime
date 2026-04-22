@@ -1,4 +1,4 @@
-package com.example.standtime
+package com.standtime.clock
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

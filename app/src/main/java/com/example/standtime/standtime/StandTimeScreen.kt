@@ -1,4 +1,4 @@
-package com.example.standtime.standtime
+package com.standtime.clock.standtime
 
 import android.Manifest
 import android.content.Intent
@@ -6,7 +6,12 @@ import android.content.res.Configuration
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -82,29 +87,29 @@ import androidx.compose.material.icons.rounded.GraphicEq
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.SkipNext
-import com.example.standtime.R
-import com.example.standtime.standtime.feature.CustomClockStudioPage
-import com.example.standtime.standtime.feature.components.GalleryClockContent
-import com.example.standtime.standtime.feature.components.accentColor
-import com.example.standtime.standtime.feature.components.galleryParts
-import com.example.standtime.standtime.feature.components.galleryStyleAt
-import com.example.standtime.standtime.feature.components.galleryStyleCount
-import com.example.standtime.standtime.feature.components.galleryStyles
-import com.example.standtime.standtime.feature.components.isViewedPomodoroRunning
-import com.example.standtime.standtime.feature.components.pomodoroProgress
-import com.example.standtime.standtime.feature.components.pomodoroTotalSeconds
-import com.example.standtime.standtime.feature.components.remainingPomodoroText
-import com.example.standtime.standtime.feature.utils.AccentPalette
-import com.example.standtime.standtime.feature.utils.CalendarDayCell
-import com.example.standtime.standtime.feature.utils.PomodoroPhase
-import com.example.standtime.standtime.feature.utils.StandTimeIntent
-import com.example.standtime.standtime.feature.utils.StandTimeLanguage
-import com.example.standtime.standtime.feature.utils.StandTimeUiState
-import com.example.standtime.standtime.feature.utils.ThemeMode
-import com.example.standtime.standtime.feature.utils.localizedStringResource
-import com.example.standtime.ui.theme.CoralAccent
-import com.example.standtime.ui.theme.LimeAccent
-import com.example.standtime.ui.theme.SkyAccent
+import com.standtime.clock.R
+import com.standtime.clock.standtime.feature.CustomClockStudioPage
+import com.standtime.clock.standtime.feature.components.GalleryClockContent
+import com.standtime.clock.standtime.feature.components.accentColor
+import com.standtime.clock.standtime.feature.components.galleryParts
+import com.standtime.clock.standtime.feature.components.galleryStyleAt
+import com.standtime.clock.standtime.feature.components.galleryStyleCount
+import com.standtime.clock.standtime.feature.components.galleryStyles
+import com.standtime.clock.standtime.feature.components.isViewedPomodoroRunning
+import com.standtime.clock.standtime.feature.components.pomodoroProgress
+import com.standtime.clock.standtime.feature.components.pomodoroTotalSeconds
+import com.standtime.clock.standtime.feature.components.remainingPomodoroText
+import com.standtime.clock.standtime.feature.utils.AccentPalette
+import com.standtime.clock.standtime.feature.utils.CalendarDayCell
+import com.standtime.clock.standtime.feature.utils.PomodoroPhase
+import com.standtime.clock.standtime.feature.utils.StandTimeIntent
+import com.standtime.clock.standtime.feature.utils.StandTimeLanguage
+import com.standtime.clock.standtime.feature.utils.StandTimeUiState
+import com.standtime.clock.standtime.feature.utils.ThemeMode
+import com.standtime.clock.standtime.feature.utils.localizedStringResource
+import com.standtime.clock.ui.theme.CoralAccent
+import com.standtime.clock.ui.theme.LimeAccent
+import com.standtime.clock.ui.theme.SkyAccent
 import kotlinx.coroutines.launch
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -597,6 +602,19 @@ private fun GalleryMediaChip(
     onIntent: (StandTimeIntent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val mediaTransition = rememberInfiniteTransition(label = "galleryMediaWave")
+    val wavePhase by mediaTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = if (state.isMediaPlaying) 1350 else 2200,
+                easing = LinearEasing
+            ),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "galleryMediaWavePhase"
+    )
     val title = state.mediaTitle.ifBlank {
         localizedStringResource(R.string.media_now_playing_fallback, language)
     }
@@ -606,22 +624,37 @@ private fun GalleryMediaChip(
     Row(
         modifier = modifier
             .galleryOverlaySurface(RoundedCornerShape(999.dp))
-            .padding(start = 10.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+            .background(
+                Brush.horizontalGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.06f),
+                        Color.Transparent
+                    )
+                )
+            )
+            .padding(start = 8.dp, end = 6.dp, top = 8.dp, bottom = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
-                .size(34.dp)
+                .size(42.dp)
                 .clip(CircleShape)
-                .background(Color.White.copy(alpha = 0.10f)),
+                .background(
+                    Brush.radialGradient(
+                        colors = listOf(
+                            Color(0xFF7CC9E2).copy(alpha = 0.30f),
+                            Color(0xFF0D1725).copy(alpha = 0.96f)
+                        )
+                    )
+                )
+                .border(1.dp, Color.White.copy(alpha = 0.08f), CircleShape),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = Icons.Rounded.GraphicEq,
-                contentDescription = null,
-                tint = GalleryOverlayContentColor,
-                modifier = Modifier.size(18.dp)
+            MediaWaveOrb(
+                progress = wavePhase,
+                isPlaying = state.isMediaPlaying,
+                modifier = Modifier.size(26.dp)
             )
         }
         Column(
@@ -649,8 +682,8 @@ private fun GalleryMediaChip(
         }
         IconButton(
             onClick = { onIntent(StandTimeIntent.ToggleMediaPlayback) },
-            modifier = Modifier
-                .size(34.dp)
+            modifier = Modifier.padding(end = 10.dp)
+                .size(36.dp)
                 .clip(CircleShape)
                 .background(Color.White.copy(alpha = 0.08f))
         ) {
@@ -666,8 +699,8 @@ private fun GalleryMediaChip(
         }
         IconButton(
             onClick = { onIntent(StandTimeIntent.SkipToNextTrack) },
-            modifier = Modifier
-                .size(34.dp)
+            modifier = Modifier.padding(end = 10.dp)
+                .size(36.dp)
                 .clip(CircleShape)
                 .background(Color.White.copy(alpha = 0.08f))
         ) {
@@ -676,6 +709,66 @@ private fun GalleryMediaChip(
                 contentDescription = localizedStringResource(R.string.media_next, language),
                 tint = GalleryOverlayContentColor,
                 modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun MediaWaveOrb(
+    progress: Float,
+    isPlaying: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Canvas(modifier = modifier) {
+        val width = size.width
+        val height = size.height
+        val centerY = height * 0.5f
+        val amplitude = if (isPlaying) height * 0.16f else height * 0.05f
+        val baseStroke = width * 0.08f
+
+        drawCircle(
+            brush = Brush.radialGradient(
+                colors = listOf(
+                    Color(0xFF7CC9E2).copy(alpha = 0.28f),
+                    Color.Transparent
+                )
+            ),
+            radius = width * 0.48f
+        )
+
+        val waveSteps = 24
+        val waveLength = width * 0.62f
+        val startX = (width - waveLength) / 2f
+        val phase = progress * (2f * Math.PI).toFloat()
+
+        repeat(2) { layer ->
+            val path = androidx.compose.ui.graphics.Path()
+            val layerOffset = layer * 0.85f
+            for (step in 0..waveSteps) {
+                val x = startX + waveLength * (step / waveSteps.toFloat())
+                val normalized = step / waveSteps.toFloat()
+                val y = centerY + kotlin.math.sin(normalized * (2f * Math.PI).toFloat() + phase + layerOffset) * amplitude
+                if (step == 0) path.moveTo(x, y) else path.lineTo(x, y)
+            }
+            drawPath(
+                path = path,
+                color = if (layer == 0) Color(0xFF9AD6A0) else Color(0xFF7CC9E2),
+                style = Stroke(
+                    width = if (layer == 0) baseStroke else baseStroke * 0.72f,
+                    cap = StrokeCap.Round
+                ),
+                alpha = if (layer == 0) 0.95f else 0.72f
+            )
+        }
+
+        if (!isPlaying) {
+            drawLine(
+                color = Color.White.copy(alpha = 0.18f),
+                start = androidx.compose.ui.geometry.Offset(startX, centerY + amplitude * 1.7f),
+                end = androidx.compose.ui.geometry.Offset(startX + waveLength, centerY + amplitude * 1.7f),
+                strokeWidth = baseStroke * 0.56f,
+                cap = StrokeCap.Round
             )
         }
     }

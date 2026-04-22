@@ -1,9 +1,9 @@
-package com.example.standtime.ui.theme
+package com.standtime.clock.ui.theme
 
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import com.example.standtime.R
+import com.standtime.clock.R
 
 object StandTimeFontFamilies {
     val Inter = FontFamily(

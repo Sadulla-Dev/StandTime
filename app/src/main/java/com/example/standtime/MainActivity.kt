@@ -1,4 +1,4 @@
-package com.example.standtime
+package com.standtime.clock
 
 import android.Manifest
 import android.content.Intent
@@ -36,12 +36,12 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.standtime.standtime.feature.PhysicsBubbleScreen
-import com.example.standtime.standtime.StandTimeRoute
-import com.example.standtime.standtime.feature.utils.StandTimeIntent
-import com.example.standtime.standtime.StandTimeViewModel
-import com.example.standtime.standtime.feature.utils.ThemeMode
-import com.example.standtime.ui.theme.StandTimeTheme
+import com.standtime.clock.standtime.feature.PhysicsBubbleScreen
+import com.standtime.clock.standtime.StandTimeRoute
+import com.standtime.clock.standtime.feature.utils.StandTimeIntent
+import com.standtime.clock.standtime.StandTimeViewModel
+import com.standtime.clock.standtime.feature.utils.ThemeMode
+import com.standtime.clock.ui.theme.StandTimeTheme
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

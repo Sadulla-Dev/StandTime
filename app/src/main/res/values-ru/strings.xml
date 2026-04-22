@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Stand Time</string>
+    <string name="app_name">Desk Clock</string>
     <string name="charging_label">Режим зарядки</string>
     <string name="battery_label">Батарея</string>
     <string name="battery_idle_label">Не подключено к питанию</string>

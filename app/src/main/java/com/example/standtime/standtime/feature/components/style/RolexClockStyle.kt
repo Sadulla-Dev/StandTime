@@ -1,4 +1,4 @@
-package com.example.standtime.standtime.feature.components.style
+package com.standtime.clock.standtime.feature.components.style
 
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
@@ -14,9 +14,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
-import com.example.standtime.standtime.feature.components.ClockHand
-import com.example.standtime.standtime.feature.components.GalleryClockParts
-import com.example.standtime.standtime.feature.utils.StandTimeLanguage
+import com.standtime.clock.standtime.feature.components.ClockHand
+import com.standtime.clock.standtime.feature.components.GalleryClockParts
+import com.standtime.clock.standtime.feature.utils.StandTimeLanguage
 
 @Composable
 fun RolexClockStyle(parts: GalleryClockParts, language: StandTimeLanguage, accentColor: Color, modifier: Modifier = Modifier) {

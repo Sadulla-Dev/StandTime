@@ -1,4 +1,4 @@
-package com.example.standtime.standtime.feature.components.style
+package com.standtime.clock.standtime.feature.components.style
 
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
@@ -23,12 +23,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.standtime.standtime.feature.components.GalleryClockParts
-import com.example.standtime.standtime.feature.components.LocalGalleryScaleFactor
-import com.example.standtime.standtime.feature.utils.CustomClockFont
-import com.example.standtime.standtime.feature.utils.CustomClockLayout
-import com.example.standtime.standtime.feature.utils.CustomClockStyleSettings
-import com.example.standtime.ui.theme.StandTimeFontFamilies
+import com.standtime.clock.standtime.feature.components.GalleryClockParts
+import com.standtime.clock.standtime.feature.components.LocalGalleryScaleFactor
+import com.standtime.clock.standtime.feature.utils.CustomClockFont
+import com.standtime.clock.standtime.feature.utils.CustomClockLayout
+import com.standtime.clock.standtime.feature.utils.CustomClockStyleSettings
+import com.standtime.clock.ui.theme.StandTimeFontFamilies
 
 @Composable
 fun CustomClockStyle(

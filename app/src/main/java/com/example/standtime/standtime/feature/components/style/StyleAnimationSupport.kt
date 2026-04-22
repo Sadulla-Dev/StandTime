@@ -1,4 +1,4 @@
-package com.example.standtime.standtime.feature.components.style
+package com.standtime.clock.standtime.feature.components.style
 
 import androidx.compose.animation.core.withInfiniteAnimationFrameNanos
 import androidx.compose.runtime.Composable

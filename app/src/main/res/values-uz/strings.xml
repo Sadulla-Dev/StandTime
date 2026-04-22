@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Stand Time</string>
+    <string name="app_name">Desk Clock</string>
     <string name="charging_label">Quvvatlanish rejimi</string>
     <string name="battery_label">Zaryad</string>
     <string name="battery_idle_label">Quvvatga ulanmagan</string>

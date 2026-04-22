@@ -1,4 +1,4 @@
-package com.example.standtime
+package com.standtime.clock
 
 import android.Manifest
 import android.app.PendingIntent

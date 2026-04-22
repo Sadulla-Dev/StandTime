@@ -1,4 +1,4 @@
-package com.example.standtime.ui.theme
+package com.standtime.clock.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
